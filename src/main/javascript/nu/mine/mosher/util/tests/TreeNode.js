@@ -1,201 +1,221 @@
-(function($,doh) {
+/*
+ * @licstart  The following is the entire license notice for the JavaScript code in this page.
+ *
+ * Copyright (C) 2012, by Christopher Alan Mosher, Shelton, CT.
+ *
+ * The JavaScript code in this page is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU
+ * General Public License (GNU GPL) as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option)
+ * any later version.  The code is distributed WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+ *
+ * As additional permission under GNU GPL version 3 section 7, you
+ * may distribute non-source (e.g., minimized or compacted) forms of
+ * that code without the copy of the GNU GPL normally required by
+ * section 4, provided you include this license notice and a URL
+ * through which recipients can access the Corresponding Source.
+ *
+ * @licend  The above is the entire license notice for the JavaScript code in this page.
+ */
+
+define([
+	"doh/runner",
+	"../TreeNode"],
+
+function(
+	tests,
+	TreeNode) {
+
 	"use strict";
 
-	var SUITE = "nu.mine.mosher.util.tests.TreeNode";
+	tests.register("TreeNode",[
 
-	$.provide(SUITE);
+		function nominalChild(doh) {
+			var a, b, r, i, c;
 
-	$.require("nu.mine.mosher.util.TreeNode");
-	var TreeNode = nu.mine.mosher.util.TreeNode;
-	$.require("nu.mine.mosher.util.Util");
-	var Util = nu.mine.mosher.util.Util;
+			a = new TreeNode();
+			a.obj = "a";
+			b = new TreeNode();
+			b.obj = "b";
 
-	doh.register(SUITE,[
+			a.addChild(b);
+			r = a.getChildren();
 
-	function nominalChild() {
-		var a, b, r, i, c;
+			i = 0;
+			r.forEach(function() {i++;});
+			doh.is(1,i);
 
-		a = new TreeNode();
-		a.obj = "a";
-		b = new TreeNode();
-		b.obj = "b";
+			r.forEach(function(v) {
+				doh.is("b",v.obj);
+			});
 
-		a.addChild(b);
-		r = a.getChildren();
+			doh.is("a",b.getParent().obj);
+		},
 
-		i = 0;
-		Util.forEach(r,function() {i++;});
-		doh.is(1,i);
+		function nominalRemoveChild(doh) {
+			var a, b, r, i, c;
 
-		Util.forEach(r,function(v) {
-			doh.is("b",v.obj);
-		});
+			a = new TreeNode();
+			a.obj = "a";
+			b = new TreeNode();
+			b.obj = "b";
 
-		doh.is("a",b.getParent().obj);
-	},
+			a.addChild(b);
+			a.removeChild(b);
+			r = a.getChildren();
 
-	function nominalRemoveChild() {
-		var a, b, r, i, c;
+			i = 0;
+			r.forEach(function() {i++;});
+			doh.is(0,i);
 
-		a = new TreeNode();
-		a.obj = "a";
-		b = new TreeNode();
-		b.obj = "b";
+			doh.is(null,b.getParent());
+		},
 
-		a.addChild(b);
-		a.removeChild(b);
-		r = a.getChildren();
+		function nominalRemoveFromParent(doh) {
+			var a, b, r, i;
 
-		i = 0;
-		Util.forEach(r,function() {i++;});
-		doh.is(0,i);
+			a = new TreeNode();
+			a.obj = "a";
+			b = new TreeNode();
+			b.obj = "b";
 
-		doh.is(null,b.getParent());
-	},
+			a.addChild(b);
+			b.removeFromParent();
 
-	function nominalRemoveFromParent() {
-		var a, b, r, i;
+			r = a.getChildren();
 
-		a = new TreeNode();
-		a.obj = "a";
-		b = new TreeNode();
-		b.obj = "b";
+			i = 0;
+			r.forEach(function() {i++;});
+			doh.is(0,i);
 
-		a.addChild(b);
-		b.removeFromParent();
+			doh.is(null,b.getParent());
+		},
 
-		r = a.getChildren();
+		function addChildOfOtherExistingParent(doh) {
+			var a, b, r, i, x;
 
-		i = 0;
-		Util.forEach(r,function() {i++;});
-		doh.is(0,i);
+			a = new TreeNode();
+			a.obj = "a";
+			b = new TreeNode();
+			b.obj = "b";
+			a.addChild(b);
 
-		doh.is(null,b.getParent());
-	},
-
-	function addChildOfOtherExistingParent() {
-		var a, b, r, i, x;
-
-		a = new TreeNode();
-		a.obj = "a";
-		b = new TreeNode();
-		b.obj = "b";
-		a.addChild(b);
-
-		x = new TreeNode();
-		x.obj = "x";
-		x.addChild(b);
+			x = new TreeNode();
+			x.obj = "x";
+			x.addChild(b);
 
 
 
-		r = a.getChildren();
-		i = 0;
-		Util.forEach(r,function() {i++;});
-		doh.is(0,i);
+			r = a.getChildren();
+			i = 0;
+			r.forEach(function() {i++;});
+			doh.is(0,i);
 
 
 
-		r = x.getChildren();
+			r = x.getChildren();
 
-		i = 0;
-		Util.forEach(r,function() {i++;});
-		doh.is(1,i);
+			i = 0;
+			r.forEach(function() {i++;});
+			doh.is(1,i);
 
-		Util.forEach(r,function(v) {
-			doh.is("b",v.obj);
-		});
+			r.forEach(function(v) {
+				doh.is("b",v.obj);
+			});
 
 
 
-		doh.is("x",b.getParent().obj);
-	},
+			doh.is("x",b.getParent().obj);
+		},
 
-	function threeChildren() {
-		var p, c1, c2, c3, r, i, c;
+		function threeChildren(doh) {
+			var p, c1, c2, c3, r, i, c;
 
-		p = new TreeNode();
-		p.obj = "p";
-		c1 = new TreeNode();
-		c1.obj = "c1";
-		p.addChild(c1);
-		c2 = new TreeNode();
-		c2.obj = "c2";
-		p.addChild(c2);
-		c3 = new TreeNode();
-		c3.obj = "c3";
-		p.addChild(c3);
+			p = new TreeNode();
+			p.obj = "p";
+			c1 = new TreeNode();
+			c1.obj = "c1";
+			p.addChild(c1);
+			c2 = new TreeNode();
+			c2.obj = "c2";
+			p.addChild(c2);
+			c3 = new TreeNode();
+			c3.obj = "c3";
+			p.addChild(c3);
 
-		r = p.getChildren();
+			r = p.getChildren();
 
-		i = 0;
-		Util.forEach(r,function() {i++;});
-		doh.is(3,i);
+			i = 0;
+			r.forEach(function() {i++;});
+			doh.is(3,i);
 
-		doh.is("c1",r[0].obj);
-		doh.is("c2",r[1].obj);
-		doh.is("c3",r[2].obj);
+			doh.is("c1",r[0].obj);
+			doh.is("c2",r[1].obj);
+			doh.is("c3",r[2].obj);
 
-		doh.is("p",c1.getParent().obj);
-		doh.is("p",c2.getParent().obj);
-		doh.is("p",c3.getParent().obj);
-	},
+			doh.is("p",c1.getParent().obj);
+			doh.is("p",c2.getParent().obj);
+			doh.is("p",c3.getParent().obj);
+		},
 
-	function removeMiddleChild() {
-		var p, c1, c2, c3, r, i, c;
+		function removeMiddleChild(doh) {
+			var p, c1, c2, c3, r, i, c;
 
-		p = new TreeNode();
-		p.obj = "p";
-		c1 = new TreeNode();
-		c1.obj = "c1";
-		p.addChild(c1);
-		c2 = new TreeNode();
-		c2.obj = "c2";
-		p.addChild(c2);
-		c3 = new TreeNode();
-		c3.obj = "c3";
-		p.addChild(c3);
+			p = new TreeNode();
+			p.obj = "p";
+			c1 = new TreeNode();
+			c1.obj = "c1";
+			p.addChild(c1);
+			c2 = new TreeNode();
+			c2.obj = "c2";
+			p.addChild(c2);
+			c3 = new TreeNode();
+			c3.obj = "c3";
+			p.addChild(c3);
 
-		p.removeChild(c2);
+			p.removeChild(c2);
 
-		r = p.getChildren();
+			r = p.getChildren();
 
-		doh.is(2,r.length);
-		i = 0;
-		Util.forEach(r,function() {i++;});
-		doh.is(2,i);
+			doh.is(2,r.length);
+			i = 0;
+			r.forEach(function() {i++;});
+			doh.is(2,i);
 
-		doh.is("c1",r[0].obj);
-		doh.is("c3",r[1].obj);
+			doh.is("c1",r[0].obj);
+			doh.is("c3",r[1].obj);
 
-		doh.is("p",c1.getParent().obj);
-		doh.is(null,c2.getParent());
-		doh.is("p",c3.getParent().obj);
-	},
+			doh.is("p",c1.getParent().obj);
+			doh.is(null,c2.getParent());
+			doh.is("p",c3.getParent().obj);
+		},
 
-	function addUndefinedChildShouldRaise() {
-		var n;
-		n = new TreeNode();
-		doh.e(Error,n,"addChild",[undefined]);
-	},
+		function addUndefinedChildShouldRaise(doh) {
+			var n;
+			n = new TreeNode();
+			doh.e(Error,n,"addChild",[undefined]);
+		},
 
-	function addNullChildShouldRaise() {
-		var n;
-		n = new TreeNode();
-		doh.e(Error,n,"addChild",[null]);
-	},
+		function addNullChildShouldRaise(doh) {
+			var n;
+			n = new TreeNode();
+			doh.e(Error,n,"addChild",[null]);
+		},
 
-	function removeUndefinedChildShouldRaise() {
-		var n;
-		n = new TreeNode();
-		doh.e(Error,n,"removeChild",[undefined]);
-	},
+		function removeUndefinedChildShouldRaise(doh) {
+			var n;
+			n = new TreeNode();
+			doh.e(Error,n,"removeChild",[undefined]);
+		},
 
-	function removeNullChildShouldRaise() {
-		var n;
-		n = new TreeNode();
-		doh.e(Error,n,"removeChild",[null]);
-	}
+		function removeNullChildShouldRaise(doh) {
+			var n;
+			n = new TreeNode();
+			doh.e(Error,n,"removeChild",[null]);
+		}
 
 	]);
 
-})(window.dojo,window.doh);
+});

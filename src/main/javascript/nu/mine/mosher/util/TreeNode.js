@@ -33,7 +33,7 @@
  * @type TreeNode
  */
 
-define(["dojo/_base/declare"], null, function(declare) {
+define(["dojo/_base/declare"], function(declare) {
 
 	"use strict";
 
@@ -85,7 +85,11 @@ define(["dojo/_base/declare"], null, function(declare) {
 		 */
 		removeChild: function(child) {
 			child.parent = null;
-			this.children.filter(function (c) { return c !== child; });
+			this.children = this.children.filter(
+				function (c) {
+					return c !== child
+				}
+			);
 		},
 
 		/**
