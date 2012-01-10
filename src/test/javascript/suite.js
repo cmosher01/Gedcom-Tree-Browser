@@ -67,13 +67,17 @@ function suite(global) {
 
 	var modulePath = module.replace(/\./g,"/");
 
+//  dojo.registerModule(module+".tests","../../../test/javascript/"+modulePath+"/tests");
+
 	var loc;
 	loc = "";
 	loc += "../../main/javascript/util/doh/runner.html";
 	loc += "?";
-	loc += "testModule="+module+".tests.tests";
+	loc += "test="+modulePath+"/tests/tests.js";
 	loc += "&";
-	loc += "registerModulePath="+module+".tests,../../../test/javascript/"+modulePath+"/tests";
+	loc += "paths="+module+".tests,../../../test/javascript/"+modulePath+"/tests";
+
+  console.log(loc);
 
 	global.location = loc;
 }
