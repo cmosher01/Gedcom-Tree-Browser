@@ -1,5 +1,6 @@
 define([
-	"./Util",
-	"./TreeNode"
-],
-1);
+
+"./Util",
+"./TreeNode"
+
+],true);

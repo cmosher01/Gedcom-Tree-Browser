@@ -33,7 +33,7 @@
  * @throws always throws an error
  */
 
-define(["dojo/_base/declare"], function(declare) {
+define(["dojo/_base/declare","dojo/_base/window"], function(declare,win) {
 
 	"use strict";
 
@@ -135,7 +135,14 @@ define(["dojo/_base/declare"], function(declare) {
 	 * @param {Function} fn function to call
 	 */
 	Util.forEach = function(r,fn) {
-		r.forEach(fn);
+		var i;
+		if (r.forEach) {
+			r.forEach(fn);
+		} else {
+			for (i in r) {
+				fn(r[i]);
+			}
+		}
 	};
 
 	/**
@@ -223,7 +230,7 @@ define(["dojo/_base/declare"], function(declare) {
 	 * @type HTMLElement
 	 */
 	Util.createHtmlElement = function(tag) {
-		return $.doc.createElement(tag);
+		return win.doc.createElement(tag);
 	};
 
 	/**
@@ -297,6 +304,7 @@ define(["dojo/_base/declare"], function(declare) {
 		return Util.numberOrder(a.getTime(),b.getTime());
 	};
 
+	/* TODO check on IE to see if DOJO handles this for us */
 	Util.leftClick = function(e) {
 		if (e.which == null) {
 			return (e.button < 2);

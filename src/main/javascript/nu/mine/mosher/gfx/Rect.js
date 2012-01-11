@@ -1,3 +1,25 @@
+/*
+ * @licstart  The following is the entire license notice for the JavaScript code in this page.
+ *
+ * Copyright (C) 2012, by Christopher Alan Mosher, Shelton, CT.
+ *
+ * The JavaScript code in this page is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU
+ * General Public License (GNU GPL) as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option)
+ * any later version.  The code is distributed WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+ *
+ * As additional permission under GNU GPL version 3 section 7, you
+ * may distribute non-source (e.g., minimized or compacted) forms of
+ * that code without the copy of the GNU GPL normally required by
+ * section 4, provided you include this license notice and a URL
+ * through which recipients can access the Corresponding Source.
+ *
+ * @licend  The above is the entire license notice for the JavaScript code in this page.
+ */
+
 /**
  * @fileoverview
  * Defines the {@link Rect} class.
@@ -7,29 +29,26 @@
  * @class Represents a graphical rectangle in 2D space.
  * @requires Point
  * @requires Size
- * @requires Util
- * 
+ *
  * @constructor
  * @param {Point} pos the location of the top-left corner of this {@link Rect}
  * @param {Size} siz the width and height of this {@link Rect}
  * @return new {@link Rect}
  * @type Rect
  */
-(function($) {
+define([
+	"dojo/_base/declare",
+	"./Point",
+	"./Size"],
+
+function(
+	declare,
+	Point,
+	Size) {
+
 	"use strict";
 
-	var CLASS = "nu.mine.mosher.gfx.Rect";
-
-	$.provide(CLASS);
-
-	$.require("nu.mine.mosher.gfx.Point");
-	var Point = nu.mine.mosher.gfx.Point;
-	$.require("nu.mine.mosher.gfx.Size");
-	var Size = nu.mine.mosher.gfx.Size;
-	$.require("nu.mine.mosher.util.Util");
-	var Util = nu.mine.mosher.util.Util;
-
-	var Rect = $.declare(CLASS, null, {
+	var Rect = declare(null, {
 
 		constructor: function(pos,siz) {
 			/**
@@ -38,7 +57,7 @@
 			 * @type Point
 			 */
 			this.pos = pos;
-		
+
 			/**
 			 * width and height
 			 * @private
@@ -46,7 +65,7 @@
 			 */
 			this.siz = siz;
 		},
-		
+
 		/**
 		 * Gets the location of the top-left corner of this {@link Rect}
 		 * @return top-left
@@ -55,7 +74,7 @@
 		getPos: function() {
 			return this.pos;
 		},
-		
+
 		/**
 		 * Gets the width and height of this {@link Rect}
 		 * @return width and height
@@ -64,7 +83,7 @@
 		getSize: function() {
 			return this.siz;
 		},
-		
+
 		/**
 		 * Gets the x coordinate of the left of this {@link Rect}.
 		 * @return left
@@ -73,7 +92,7 @@
 		getLeft: function() {
 			return this.pos.getX();
 		},
-		
+
 		/**
 		 * Gets the width of this {@link Rect}
 		 * @return width
@@ -82,7 +101,7 @@
 		getWidth: function() {
 			return this.siz.getWidth();
 		},
-		
+
 		/**
 		 * Gets the y coordinate of the top of this {@link Rect}.
 		 * @return top
@@ -91,7 +110,7 @@
 		getTop: function() {
 			return this.pos.getY();
 		},
-		
+
 		/**
 		 * Gets the height of this {@link Rect}
 		 * @return height
@@ -100,7 +119,7 @@
 		getHeight: function() {
 			return this.siz.getHeight();
 		},
-		
+
 		/**
 		 * Gets the x coordinate of the right of this {@link Rect}.
 		 * @return right
@@ -109,7 +128,7 @@
 		getRight: function() {
 			return this.getLeft()+this.getWidth();
 		},
-		
+
 		/**
 		 * Gets the y coordinate of the bottom of this {@link Rect}.
 		 * @return bottom
@@ -118,7 +137,7 @@
 		getBottom: function() {
 			return this.getTop()+this.getHeight();
 		},
-		
+
 		/**
 		 * Gets the x coordinate of the middle of this {@link Rect}.
 		 * @return mid-x
@@ -127,7 +146,7 @@
 		getMidX: function() {
 			return Math.round((this.getLeft()+this.getRight())/2);
 		},
-		
+
 		/**
 		 * Gets the y coordinate of the middle of this {@link Rect}.
 		 * @return mid-y
@@ -138,7 +157,7 @@
 		}
 	});
 
-		
+
 	/**
 	 * Gets the given HTMLElement's location (offset).
 	 * @param {HTMLElement} e element to get the location of
@@ -148,7 +167,7 @@
 	Rect.ofDiv = function(e) {
 		return new Rect(new Point(e.offsetLeft,e.offsetTop),new Size(e.offsetWidth,e.offsetHeight));
 	};
-	
+
 	/**
 	 * Checks if two rectangles intersect.
 	 * @param {Rect} r1
@@ -160,4 +179,6 @@
 		return r1.getTop() <= r2.getBottom() && r2.getTop() <= r1.getBottom() && r1.getLeft() <= r2.getRight() && r2.getLeft() <= r1.getRight();
 	};
 
-})(window.dojo);
+	return Rect;
+
+});

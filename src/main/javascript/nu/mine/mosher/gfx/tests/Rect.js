@@ -20,69 +20,38 @@
  * @licend  The above is the entire license notice for the JavaScript code in this page.
  */
 
-/**
- * @fileoverview
- * Defines the {@link Size} class.
- */
+define([
+	"doh/runner",
+	"../Rect",
+	"../Point",
+	"../Size"],
 
-/**
- * @class
- * Represents the size of a graphical object in 2D space.
- * @requires Util
- * @constructor
- * @param {Number} w width
- * @param {Number} h height
- * @return new {@link Size}
- * @type Size
- */
-define(["dojo/_base/declare"], function(declare) {
+function(
+	tests,
+	Rect,
+	Point,
+	Size) {
 
 	"use strict";
 
-	return declare(null, {
+	tests.register("Rect",[
 
-		constructor: function(w,h) {
-			/**
-			 * width
-			 * @private
-			 * @type Number
-			 */
-			this.w = parseInt(w,10);
-			/**
-			 * height
-			 * @private
-			 * @type Number
-			 */
-			this.h = parseInt(h,10);
+		function nominal(doh) {
+			var r;
+			r = new Rect(new Point(43,67), new Size(83,61));
+			doh.is(r.getLeft(), 43);
+			doh.is(r.getTop(), 67);
+			doh.is(r.getWidth(), 83);
+			doh.is(r.getHeight(), 61);
 		},
-		
-		/**
-		 * Gets the width of this {@link Size}.
-		 * @returns width
-		 * @type Number
-		 */
-		getWidth: function() {
-			return this.w;
-		},
-		
-		/**
-		 * Gets the height of this {@link Size}.
-		 * @returns width
-		 * @type Number
-		 */
-		getHeight: function() {
-			return this.h;
-		},
-		
-		/**
-		 * Gets a debug string for this {@link Size}.
-		 * @return debug string
-		 * @type String
-		 */
-		toString: function() {
-			return "WxH="+this.getWidth()+"x"+this.getHeight();
+
+		function nominalRightBottom(doh) {
+			var r;
+			r = new Rect(new Point(43,67), new Size(83,61));
+			doh.is(r.getRight(), 43+83);
+			doh.is(r.getBottom(), 67+61);
 		}
 
-	});
+	]);
 
 });

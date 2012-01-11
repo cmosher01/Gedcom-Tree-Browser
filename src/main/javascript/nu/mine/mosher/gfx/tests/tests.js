@@ -1,14 +1,7 @@
-(function($,doh) {
-	"use strict";
+define([
 
-	$.provide("nu.mine.mosher.gfx.tests.tests");
+"./Point",
+"./Size",
+"./Rect"],
 
-	try {
-		$.require("nu.mine.mosher.gfx.tests.Point");
-		$.require("nu.mine.mosher.gfx.tests.Size");
-		//$.require("nu.mine.mosher.gfx.tests.Rect");
-	} catch(e) {
-		doh.debug(e);
-	}
-
-})(window.dojo, window.doh);
+true);
