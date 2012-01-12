@@ -70,7 +70,9 @@ function(
 				this.moveConnection.remove();
 				this.moveConnection = null;
 			}
-			event.stop(e);
+			if (e) { /* because we can be called directly, without an event */
+				event.stop(e);
+			}
 		},
 
 		moveToCursor: function(e) {

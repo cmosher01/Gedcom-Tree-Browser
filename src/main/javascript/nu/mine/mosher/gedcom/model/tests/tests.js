@@ -1,6 +1,6 @@
 define([
 
-"./GedcomLine"/*,
-"./GedcomTree"*/],
+"./GedcomLine",
+"./GedcomTree"],
 
 true);

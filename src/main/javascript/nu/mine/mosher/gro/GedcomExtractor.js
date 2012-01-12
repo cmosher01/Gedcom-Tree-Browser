@@ -1,49 +1,75 @@
+/*
+ * @licstart  The following is the entire license notice for the JavaScript code in this page.
+ *
+ * Copyright (C) 2012, by Christopher Alan Mosher, Shelton, CT.
+ *
+ * The JavaScript code in this page is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU
+ * General Public License (GNU GPL) as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option)
+ * any later version.  The code is distributed WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+ *
+ * As additional permission under GNU GPL version 3 section 7, you
+ * may distribute non-source (e.g., minimized or compacted) forms of
+ * that code without the copy of the GNU GPL normally required by
+ * section 4, provided you include this license notice and a URL
+ * through which recipients can access the Corresponding Source.
+ *
+ * @licend  The above is the entire license notice for the JavaScript code in this page.
+ */
+
 /**
  * @fileoverview
  * Defines the {@link GedcomExtractor} class.
  */
 
-(function($) {
-	"use strict";
+define([
+	"dojo/_base/declare",
+	"dojo/_base/lang",
+	"dojo/_base/array",
+	"nu/mine/mosher/util/Util",
+	"nu/mine/mosher/gfx/Point",
+	"nu/mine/mosher/gfx/Selector",
+	"nu/mine/mosher/gedcom/model/date/YMD",
+	"nu/mine/mosher/gedcom/model/date/DateRange",
+	"nu/mine/mosher/gedcom/model/date/DatePeriod",
+	"nu/mine/mosher/gedcom/model/date/GedcomDateParser",
+	"nu/mine/mosher/gedcom/model/GedcomTag",
+	"nu/mine/mosher/gedcom/model/GedcomEvent",
+	"nu/mine/mosher/gedcom/model/Source",
+	"nu/mine/mosher/gedcom/model/Citation",
+	"./model/PersonModel",
+	"./model/PartnershipModel",
+	"./model/TreeModel",
+	"./Person",
+	"./Partnership"],
 
-	var CLASS = "nu.mine.mosher.gro.GedcomExtractor";
+function(
+	declare,
+	lang,
+	arr,
+	Util,
+	Point,
+	Selector,
+	YMD,
+	DateRange,
+	DatePeriod,
+	GedcomDateParser,
+	GedcomTag,
+	GedcomEvent,
+	Source,
+	Citation,
+	PersonModel,
+	PartnershipModel,
+	TreeModel,
+	Person,
+	Partnership) {
 
-	$.provide(CLASS);
 
-	$.require("nu.mine.mosher.gro.Partnership");
-	var Partnership = nu.mine.mosher.gro.Partnership;
-	$.require("nu.mine.mosher.gro.Person");
-	var Person = nu.mine.mosher.gro.Person;
-	$.require("nu.mine.mosher.gro.model.TreeModel");
-	var TreeModel = nu.mine.mosher.gro.model.TreeModel;
-	$.require("nu.mine.mosher.gro.model.PartnershipModel");
-	var PartnershipModel = nu.mine.mosher.gro.model.PartnershipModel;
-	$.require("nu.mine.mosher.gro.model.PersonModel");
-	var PersonModel = nu.mine.mosher.gro.model.PersonModel;
-	$.require("nu.mine.mosher.gedcom.model.GedcomEvent");
-	var GedcomEvent = nu.mine.mosher.gedcom.model.GedcomEvent;
-	$.require("nu.mine.mosher.gedcom.model.Source");
-	var Source = nu.mine.mosher.gedcom.model.Source;
-	$.require("nu.mine.mosher.gedcom.model.Citation");
-	var Citation = nu.mine.mosher.gedcom.model.Citation;
-	$.require("nu.mine.mosher.gedcom.model.GedcomTag");
-	var GedcomTag = nu.mine.mosher.gedcom.model.GedcomTag;
-	$.require("nu.mine.mosher.gedcom.model.date.GedcomDateParser");
-	var GedcomDateParser = nu.mine.mosher.gedcom.model.date.GedcomDateParser;
-	$.require("nu.mine.mosher.gedcom.model.date.DatePeriod");
-	var DatePeriod = nu.mine.mosher.gedcom.model.date.DatePeriod;
-	$.require("nu.mine.mosher.gedcom.model.date.DateRange");
-	var DateRange = nu.mine.mosher.gedcom.model.date.DateRange;
-	$.require("nu.mine.mosher.gedcom.model.date.YMD");
-	var YMD = nu.mine.mosher.gedcom.model.date.YMD;
-	$.require("nu.mine.mosher.gfx.Selector");
-	var Selector = nu.mine.mosher.gfx.Selector;
-	$.require("nu.mine.mosher.gfx.Point");
-	var Point = nu.mine.mosher.gfx.Point;
-	$.require("nu.mine.mosher.util.Util");
-	var Util = nu.mine.mosher.util.Util;
 
-	var GedcomExtractor = $.declare(CLASS, null, {
+	return declare(null, {
 /**
  * @class
  * Extracts needed data from a {@link GedcomTree}.
@@ -94,15 +120,15 @@ constructor: function(gedcomtree,container) {
 
 	this.selector = new Selector(
 		this.container,
-		$.hitch(this, function(rect) {
+		lang.hitch(this, function(rect) {
 			Util.forEach(this.mperson,function(person) {
 				person.select(person.hit(rect));
 			});
 		}),
-		$.hitch(this, function() {
+		lang.hitch(this, function() {
 			this.selection = [];
 			this.selectionPartners = {};
-			Util.forEach(this.mperson,$.hitch(this,function(person) {
+			Util.forEach(this.mperson,lang.hitch(this,function(person) {
 				if (person.isSelected()) {
 					this.selectPerson(person);
 				}
@@ -113,10 +139,10 @@ constructor: function(gedcomtree,container) {
 
 selectPerson: function(person) {
 	this.selection.push(person);
-	Util.forEach(person.getChildIn(),$.hitch(this,function(part) {
+	Util.forEach(person.getChildIn(),lang.hitch(this,function(part) {
 		this.selectionPartners[part.getID()] = part;
 	}));
-	Util.forEach(person.getSpouseIn(),$.hitch(this,function(part) {
+	Util.forEach(person.getSpouseIn(),lang.hitch(this,function(part) {
 		this.selectionPartners[part.getID()] = part;
 	}));
 },
@@ -138,17 +164,17 @@ extract: function() {
 	var rchil;
 	rchil = this.t.getRoot().getChildren();
 
-	Util.forEach(rchil, $.hitch(this,function(node) {
+	Util.forEach(rchil, lang.hitch(this,function(node) {
 		if (node.line.getTag() === "SOUR") {
 			this.msour[node.line.getID()] = this.extractSource(node);
 		}
 	}));
-	Util.forEach(rchil, $.hitch(this,function(node) {
+	Util.forEach(rchil, lang.hitch(this,function(node) {
 		if (node.line.getTag() === "INDI") {
 			this.mperson[node.line.getID()] = this.extractPerson(node);
 		}
 	}));
-	Util.forEach(rchil, $.hitch(this,function(node) {
+	Util.forEach(rchil, lang.hitch(this,function(node) {
 		if (node.line.getTag() === "FAM") {
 			this.mpartnership[node.line.getID()] = this.extractParnership(node);
 		}
@@ -166,7 +192,7 @@ extract: function() {
 extractRepoName: function(repo) {
 	var n;
 	n = "";
-	Util.forEach(repo.getChildren(), $.hitch(this,function(node) {
+	Util.forEach(repo.getChildren(), lang.hitch(this,function(node) {
 		if (node.line.getTag() === "NAME") {
 			n = node.line.getVal();
 		}
@@ -178,7 +204,7 @@ extractSource: function(sour) {
 	var auth, titl, publ, repo, text;
 	publ = titl = auth = "[unknown]";
 	repo = text = "";
-	Util.forEach(sour.getChildren(), $.hitch(this,function(node) {
+	Util.forEach(sour.getChildren(), lang.hitch(this,function(node) {
 		if (node.line.getTag() === "AUTH") {
 			auth = node.line.getVal();
 		} else if (node.line.getTag() === "TITL") {
@@ -203,7 +229,7 @@ extractCitation: function(sour) {
 	var page = "";
 	var quay = null;
 
-	Util.forEach(sour.getChildren(), $.hitch(this,function(node) {
+	Util.forEach(sour.getChildren(), lang.hitch(this,function(node) {
 		if (node.line.getTag() === "PAGE") {
 			page = node.line.getVal();
 		} else if (node.line.getTag() === "TEXT") {
@@ -386,7 +412,7 @@ extractDate: function(s) {
 
 onBeginDrag: function(hitPerson) {
 	if (this.selection.length > 0) {
-		if ($.indexOf(this.selection,hitPerson) < 0) {
+		if (arr.indexOf(this.selection,hitPerson) < 0) {
 			Util.forEach(this.selection,function(person) {
 				person.select(false);
 			});
@@ -429,4 +455,4 @@ onEndDrag: function() {
 }
 	});
 
-})(window.dojo);
+});

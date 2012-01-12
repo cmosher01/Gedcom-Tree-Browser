@@ -1,49 +1,70 @@
+/*
+ * @licstart  The following is the entire license notice for the JavaScript code in this page.
+ *
+ * Copyright (C) 2012, by Christopher Alan Mosher, Shelton, CT.
+ *
+ * The JavaScript code in this page is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU
+ * General Public License (GNU GPL) as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option)
+ * any later version.  The code is distributed WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+ *
+ * As additional permission under GNU GPL version 3 section 7, you
+ * may distribute non-source (e.g., minimized or compacted) forms of
+ * that code without the copy of the GNU GPL normally required by
+ * section 4, provided you include this license notice and a URL
+ * through which recipients can access the Corresponding Source.
+ *
+ * @licend  The above is the entire license notice for the JavaScript code in this page.
+ */
+
 /**
  * @fileoverview
  * Defines the {@link GedcomTree} class.
  */
 
-(function($) {
+define([
+	"dojo/_base/declare",
+	"nu/mine/mosher/util/Util",
+	"nu/mine/mosher/util/TreeNode",
+	"./GedcomLine"],
+function(
+	declare,
+	Util,
+	TreeNode,
+	GedcomLine) {
+
 	"use strict";
 
-	var CLASS = "nu.mine.mosher.gedcom.model.GedcomTree";
-
-	$.provide(CLASS);
-
-	$.require("nu.mine.mosher.gedcom.model.GedcomLine");
-	var GedcomLine = nu.mine.mosher.gedcom.model.GedcomLine;
-	$.require("nu.mine.mosher.util.TreeNode");
-	var TreeNode = nu.mine.mosher.util.TreeNode;
-	$.require("nu.mine.mosher.util.Util");
-	var Util = nu.mine.mosher.util.Util;
-
-	var GedcomTree = $.declare(CLASS, null, {
+	var GedcomTree = declare(null, {
 
 		/**
 		 * @class Represents a GEDCOM file, as a hierarchical tree.
 		 * @requires GedcomLine
 		 * @requires TreeNode
 		 * @requires Util
-		 * 
+		 *
 		 * @constructor
 		 * @return new {@link GedcomTree}
 		 * @type GedcomTreee
 		 */
 		constructor: function() {
 			/**
-			 * The root of the entire tree. We add a "line" property to each {@link TreeNode} for its {@link GedcomLine}. 
+			 * The root of the entire tree. We add a "line" property to each {@link TreeNode} for its {@link GedcomLine}.
 			 * @private
 			 * @type TreeNode
 			 */
 			this.root = new TreeNode();
-		
+
 			/**
 			 * previously added node
 			 * @private
 			 * @type TreeNode
 			 */
 			this.prevNode = this.root;
-		
+
 			/**
 			 * level number of previously added node
 			 * @private
@@ -51,7 +72,7 @@
 			 */
 			this.prevLevel = -1;
 		},
-		
+
 		/**
 		 * Gets the root, which is a {@link TreeNode}. Each {@link TreeNode} will
 		 * have a property called "line" that is a {@link GedcomLine}. The children of
@@ -63,7 +84,7 @@
 		getRoot: function() {
 			return this.root;
 		},
-		
+
 		/**
 		 * Adds the given line to this {@link GedcomTree}. Note that this method must
 		 * be called in the same sequence as lines in the GEDCOM file.
@@ -74,24 +95,24 @@
 			if (!(line instanceof GedcomLine)) {
 				throw new TypeError("must be GedcomLine");
 			}
-		
+
 			v = line.getLevel();
 			c = this.prevLevel + 1 - v;
 			if (c < 0) {
 				throw new Error("Invalid level: " + v);
 			}
 			this.prevLevel = v;
-		
+
 			p = this.prevNode;
 			for (i = 0; i < c; i++) {
 				p = p.getParent();
 			}
-		
+
 			this.prevNode = new TreeNode();
 			this.prevNode.line = line; // create "line" property in tree node
 			p.addChild(this.prevNode);
 		},
-		
+
 		/**
 		 * Concatenates any CONC or CONT lines in this {@link GedcomTree}
 		 * to their parent lines, and removes the CONC and CONT lines.
@@ -103,7 +124,7 @@
 		resolveReferences: function() {
 			GedcomTree.resolveReferencesPrivateHelper(this.getRoot());
 		},
-		
+
 		/**
 		 * Parses the given GEDCOM string and adds the records
 		 * to this {@link GedcomTree}. Can be called multiple times for chunks of
@@ -112,9 +133,9 @@
 		 */
 		parseAppend: function(gc) {
 			var rs, tre;
-		
+
 			rs = Util.getLines(gc);
-		
+
 			tre = this;
 			Util.forEach(rs, function(s) {
 				if (s.length > 0) { // skip blank lines
@@ -148,7 +169,7 @@
 	GedcomTree.concatenatePrivateHelper = function(p) {
 		var rdel;
 		rdel = [];
-	
+
 		Util.forEach(p.getChildren(), function(c) {
 			GedcomTree.concatenatePrivateHelper(c);
 			switch (c.line.getTag()) {
@@ -187,4 +208,7 @@
 			}
 		});
 	};
-})(window.dojo);
+
+	return GedcomTree;
+
+});

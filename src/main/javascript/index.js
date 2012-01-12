@@ -1,7 +1,6 @@
-(function($) {
-	"use strict";
-
-	$.require("nu.mine.mosher.gro.main");
-
-	$.addOnLoad(nu.mine.mosher.gro.main.main);
-})(window.dojo);
+require([
+	"nu/mine/mosher/gro/main",
+	"dojo/domReady!"],
+function(main) {
+	main();
+});
