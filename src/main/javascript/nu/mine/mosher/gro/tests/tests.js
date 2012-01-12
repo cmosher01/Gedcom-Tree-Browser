@@ -1,14 +1,7 @@
-(function($,doh) {
-	"use strict";
+define([
 
-	$.provide("nu.mine.mosher.gro.tests.tests");
+"./Person",
+"./Partnership",
+"./GedcomExtractor"],
 
-	try {
-		$.require("nu.mine.mosher.gro.tests.Person");
-		$.require("nu.mine.mosher.gro.tests.Partnership");
-		$.require("nu.mine.mosher.gro.tests.GedcomExtractor");
-	} catch(e) {
-		doh.debug(e);
-	}
-
-})(window.dojo, window.doh);
+true);
