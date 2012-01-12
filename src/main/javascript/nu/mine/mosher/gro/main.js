@@ -22,7 +22,6 @@
 
 define([
 	"dojo/_base/declare",
-	"dojo/_base/window",
 	"dojo/query",
 	"dojo/dom",
 	"dojo/dom-construct",
@@ -32,7 +31,6 @@ define([
 
 function(
 	declare,
-	win,
 	query,
 	dom,
 	domConstruct,
@@ -43,20 +41,15 @@ function(
 	"use strict";
 
 	return function() {
-		var head, title, gedcom;
-	
-		gedcom = null;
-	
-		/* get the head of the doc */
-		head = query("html head")[0];
+		var gedcom = null;
 	
 		/* remove any existing title from the document */
-		title = query("html head title").forEach(domConstruct.destroy);
+		query("html head title").forEach(domConstruct.destroy);
 	
 		/* add our title to the document */
-		domConstruct.create("title",{innerHTML:"GRO Javascript"},head,"first");
+		domConstruct.create("title",{innerHTML:"GRO Javascript"},query("html head")[0],"first");
 	
-		domConstruct.create("div",{id:"dropline"},win.doc.body);
+		domConstruct.create("div",{id:"dropline"},query("html body")[0]);
 	
 		xhr.get({
 			url: "../rapp.ged",
