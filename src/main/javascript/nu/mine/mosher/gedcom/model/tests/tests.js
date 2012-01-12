@@ -1,13 +1,6 @@
-(function($,doh) {
-	"use strict";
+define([
 
-	$.provide("nu.mine.mosher.gedcom.model.tests.tests");
+"./GedcomLine"/*,
+"./GedcomTree"*/],
 
-	try {
-		$.require("nu.mine.mosher.gedcom.model.tests.GedcomLine");
-		$.require("nu.mine.mosher.gedcom.model.tests.GedcomTree");
-	} catch(e) {
-		doh.debug(e);
-	}
-
-})(window.dojo, window.doh);
+true);
