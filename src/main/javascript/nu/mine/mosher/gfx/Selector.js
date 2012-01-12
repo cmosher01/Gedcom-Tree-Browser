@@ -1,30 +1,60 @@
-(function($) {
+/*
+ * @licstart  The following is the entire license notice for the JavaScript code in this page.
+ *
+ * Copyright (C) 2012, by Christopher Alan Mosher, Shelton, CT.
+ *
+ * The JavaScript code in this page is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU
+ * General Public License (GNU GPL) as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option)
+ * any later version.  The code is distributed WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+ *
+ * As additional permission under GNU GPL version 3 section 7, you
+ * may distribute non-source (e.g., minimized or compacted) forms of
+ * that code without the copy of the GNU GPL normally required by
+ * section 4, provided you include this license notice and a URL
+ * through which recipients can access the Corresponding Source.
+ *
+ * @licend  The above is the entire license notice for the JavaScript code in this page.
+ */
+
+define([
+	"dojo/_base/declare",
+	"dojo/_base/lang",
+	"dojo/_base/window",
+	"dojo/on",
+	"dojo/_base/event",
+	"./Point",
+	"./Size",
+	"./Rect",
+	"nu/mine/mosher/util/Util"],
+
+function(
+	declare,
+	lang,
+	win,
+	on,
+	event,
+	Point,
+	Size,
+	Rect,
+	Util) {
+
 	"use strict";
 
-	var CLASS = "nu.mine.mosher.gfx.Selector";
-
-	$.provide(CLASS);
-
-	$.require("nu.mine.mosher.gfx.Point");
-	var Point = nu.mine.mosher.gfx.Point;
-	$.require("nu.mine.mosher.gfx.Size");
-	var Size = nu.mine.mosher.gfx.Size;
-	$.require("nu.mine.mosher.gfx.Rect");
-	var Rect = nu.mine.mosher.gfx.Rect;
-	$.require("nu.mine.mosher.util.Util");
-	var Util = nu.mine.mosher.util.Util;
-
-	var Selector = $.declare(CLASS, null, {
+	return declare(null, {
 
 		constructor: function(element,onselect,onselectfinished) {
-			$.connect(element,"onmousedown",this,"beginDrag");
+			on(element,"mousedown",lang.hitch(this,"beginDrag"));
 			this.div = null;
 			this.start = new Point(0,0);
 			this.onselect = onselect;
 			this.onselectfinished = onselectfinished;
 			this.rect = new Rect(new Point(0,0), new Size(0,0));
 		},
-		
+
 		setDiv: function() {
 			this.rect = new Rect(
 					new Point(
@@ -41,12 +71,12 @@
 			this.div.style.width = Util.px(this.rect.getSize().getWidth());
 			this.div.style.height = Util.px(this.rect.getSize().getHeight());
 		},
-		
+
 		beginDrag: function(e) {
 			if (!Util.leftClick(e)) {
 				return true;
 			}
-			if (e.clientX >= $.doc.documentElement.clientWidth || e.clientY >= $.doc.documentElement.clientHeight) {
+			if (e.clientX >= win.doc.documentElement.clientWidth || e.clientY >= win.doc.documentElement.clientHeight) {
 				return true;
 			}
 
@@ -55,18 +85,18 @@
 			this.div = Util.createHtmlElement("div");
 			this.div.className = "selector";
 			this.div.style.position = "absolute";
-			$.doc.body.appendChild(this.div);
+			win.doc.body.appendChild(this.div);
 
 			this.setDiv();
 
 			this.onselect(this.rect);
 
-			this.moveConnection = $.connect($.doc,"onmousemove",this,"moveHandler");
-			this.upConnection = $.connect($.doc,"onmouseup",this,"upHandler");
+			this.moveConnection = on(win.doc,"mousemove",lang.hitch(this,"moveHandler"));
+			this.upConnection = on(win.doc,"mouseup",lang.hitch(this,"upHandler"));
 
-			return $.stopEvent(e);
+			event.stop(e);
 		},
-		
+
 		moveHandler: function(e) {
 			this.pos = Point.fromBrowserEvent(e);
 
@@ -74,19 +104,20 @@
 
 			this.onselect(this.rect);
 
-			return $.stopEvent(e);
+			event.stop(e);
 		},
-		
+
 		upHandler: function(e) {
-			$.disconnect(this.upConnection);
-			$.disconnect(this.moveConnection);
-		
-			$.doc.body.removeChild(this.div);
-		
+			this.upConnection.remove();
+			this.moveConnection.remove();
+
+			win.doc.body.removeChild(this.div);
+
 			this.onselectfinished();
-		
-			return $.stopEvent(e);
+
+			event.stop(e);
 		}
+
 	});
 
-})(window.dojo);
+});

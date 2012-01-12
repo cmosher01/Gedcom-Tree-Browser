@@ -7,16 +7,11 @@
 
                 This program is in the public domain.
 */
-(function($) {
+define(["./astro"], function(astro) {
 
 "use strict";
 
-$.provide("nu.mine.mosher.extern.ch.fourmilab.calendar.calendar");
-
-var calendar = nu.mine.mosher.extern.ch.fourmilab.calendar.calendar;
-
-$.require("nu.mine.mosher.extern.ch.fourmilab.calendar.astro");
-var astro = nu.mine.mosher.extern.ch.fourmilab.calendar.astro;
+var calendar = {};
 
 /*  You may notice that a variety of array variables logically local
     to functions are declared globally here.  In JavaScript, construction
@@ -929,4 +924,6 @@ calendar.jd_to_indian_civil = function(jd)
     return new Array(year, month, day);
 };
 
-})(window.dojo);
+return calendar;
+
+});

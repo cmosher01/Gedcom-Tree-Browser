@@ -7,13 +7,11 @@
                 This program is in the public domain.
 */
 
-(function($) {
+define([], function() {
 
 "use strict";
 
-$.provide("nu.mine.mosher.extern.ch.fourmilab.calendar.astro");
-
-var astro = nu.mine.mosher.extern.ch.fourmilab.calendar.astro;
+var astro = {};
 
 //Frequently-used constants
 
@@ -630,4 +628,6 @@ astro.equationOfTime = function(jd)
     return E;
 };
 
-})(window.dojo);
+return astro;
+
+});
