@@ -1,14 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 	<head>
+		<script src="../javascript/dojo/dojo.js"></script>
+		<script>
+			require([
+				"dojo/dom",
+				"dojo/dom-construct",
+				"dojo/domReady!"],
+			function(
+				dom,
+				domConstruct
+			) {
+				var mods = [
+
+					/* All modules to provide links for: */
+
+					"nu/mine/mosher/util",
+					"nu/mine/mosher/gfx",
+					"nu/mine/mosher/gedcom/model/date",
+					"nu/mine/mosher/gedcom/model",
+					"nu/mine/mosher/gro"];
+
+				var ul = domConstruct.create("ul",{},dom.byId("body"));
+
+				mods.forEach(function (mod) {
+					var urlLink = "../javascript/util/doh/runner.html?test="+mod+"/tests/tests";
+					var li = domConstruct.create("li",{},ul);
+					domConstruct.create("a" ,{href:urlLink,innerHTML:mod},li);
+				});
+			});
+		</script>
 	</head>
-	<body>
-		<ul>
-			<li><a href="../javascript/util/doh/runner.html?test=nu/mine/mosher/util/tests/tests">nu/mine/mosher/util</a></li>
-			<li><a href="../javascript/util/doh/runner.html?test=nu/mine/mosher/gfx/tests/tests">nu/mine/mosher/gfx</a></li>
-			<li><a href="../javascript/util/doh/runner.html?test=nu/mine/mosher/gedcom/model/date/tests/tests">nu/mine/mosher/gedcom/model/date</a></li>
-			<li><a href="../javascript/util/doh/runner.html?test=nu/mine/mosher/gedcom/model/tests/tests">nu/mine/mosher/gedcom/model</a></li>
-			<li><a href="../javascript/util/doh/runner.html?test=nu/mine/mosher/gro/tests/tests">nu/mine/mosher/gro</a></li>
-		</ul>
+	<body id="body">
 	</body>
 </html>

@@ -7,7 +7,7 @@ body {
 .person {
 	/* font */
 	font-size: 9pt;
-	font-family: "Microsoft Sans Serif", "sans-serif";
+	font-family: "Arial", "sans-serif";
 	color: #362C28;
 
 
@@ -96,7 +96,7 @@ table.events td {
 .tooltip {
 	/* font */
 	font-size: 7pt;
-	font-family: "Microsoft Sans Serif", "sans-serif";
+	font-family: "Arial", "sans-serif";
 	color: #362C28;
 
 	padding: 3px 8px 4px 8px;
