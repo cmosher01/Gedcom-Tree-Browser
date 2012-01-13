@@ -25,7 +25,7 @@ define([
 	"dojo/query",
 	"dojo/dom",
 	"dojo/dom-construct",
-	"dojo/_base/xhr",
+	/*"dojo/io/script"*/ "dojo/_base/xhr",
 	"nu/mine/mosher/gedcom/model/GedcomTree",
 	"./GedcomExtractor"],
 
@@ -52,7 +52,7 @@ function(
 		domConstruct.create("div",{id:"dropline"},query("html body")[0]);
 	
 		xhr.get({
-			url: "../rapp.ged",
+			url: "file:///C:/cygwin/home/Administrator/rapp.ged",
 			load: function(gc) {
 				var gtree = GedcomTree.parse(gc);
 				gedcom = new GedcomExtractor(gtree,dom.byId("dropline"));
