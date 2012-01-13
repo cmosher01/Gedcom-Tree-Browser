@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../javascript/dijit/themes/tundra/tundra.css" media="screen">
+		<script src="../javascript/dojo/dojo.js"></script>
+		<script>
+			require([
+				"dojo/on",
+				"dojox/form/Uploader",
+				"dojox/form/uploader/plugins/HTML5",
+				"dojo/domReady!"],
+			function(on,Uploader) {
+				var u = new Uploader({
+					label: "Programmatic Uploader",
+					multiple: false,
+					uploadOnSelect: true,
+					url: "/cgi-bin/ged.sh"
+				},
+				"uploader");
+				u.reset();
+				on(u,"change",function(fl) { 
+					alert(fl[0].name);
+				} );
+				console.log(u.toString());
+			});
+		</script>
+	</head>
+	<body class="tundra">
+		<div id="uploader"></div>
+	</body>
+</html>
