@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<link rel="stylesheet" type="text/css" href="../css/index.css" media="screen">
+		<link rel="stylesheet" type="text/css" href="../javascript/dijit/themes/tundra/tundra.css" media="screen">
 		<script src="../javascript/dojo/dojo.js"></script>
 		<script>
 			require([
-				"dojo/dom",
+				"dojo/_base/window",
 				"dojo/dom-construct",
 				"dojo/domReady!"],
 			function(
-				dom,
+				win,
 				domConstruct
 			) {
 				var mods = [
@@ -21,7 +23,7 @@
 					"nu/mine/mosher/gedcom/model",
 					"nu/mine/mosher/gro"];
 
-				var ul = domConstruct.create("ul",{},dom.byId("body"));
+				var ul = domConstruct.create("ul",{},win.body());
 
 				mods.forEach(function (mod) {
 					var urlLink = "../javascript/util/doh/runner.html?test="+mod+"/tests/tests";
@@ -31,6 +33,6 @@
 			});
 		</script>
 	</head>
-	<body id="body">
+	<body class="tundra">
 	</body>
 </html>
