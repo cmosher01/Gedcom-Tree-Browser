@@ -30,6 +30,11 @@
 					var li = domConstruct.create("li",{},ul);
 					domConstruct.create("a" ,{href:urlLink,innerHTML:mod},li);
 				});
+
+				var modlist = mods.map(function(mod) { return mod+"/tests/tests"; }).join(",");
+				var urlLink = "../javascript/util/doh/runner.html?test="+modlist+"/tests/tests";
+				var li = domConstruct.create("li",{},ul);
+				domConstruct.create("a" ,{href:urlLink,innerHTML:"[all]"},li);
 			});
 		</script>
 	</head>
