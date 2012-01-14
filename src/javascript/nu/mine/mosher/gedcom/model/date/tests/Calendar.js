@@ -22,11 +22,13 @@
 
 define([
 	"doh/runner",
+	"nu/mine/mosher/extern/ch/fourmilab/calendar/calendar",
 	"../Calendar",
-	"../YMD"],
+	"../YMD",],
 
 function(
 	tests,
+	cal,
 	Calendar,
 	YMD) {
 
@@ -38,7 +40,8 @@ function(
 		var ymdJulian;
 		var ymdGregorian;
 		ymdJulian = new YMD(1732,2,11,false,true);
-		ymdGregorian = Calendar.jd_to_gregorian(Calendar.julian_to_jd(ymdJulian));
+		var r = cal.jd_to_gregorian(Calendar.julian_to_jd(ymdJulian));
+		ymdGregorian = new YMD(r[0],r[1],r[2]);
 		doh.is(new YMD(1732,2,22,false,false),ymdGregorian);
 	},
 
@@ -46,7 +49,8 @@ function(
 		var ymdGregorian;
 		var ymdJulian;
 		ymdGregorian = new YMD(1752,9,14,false,false);
-		ymdJulian = Calendar.jd_to_julian(Calendar.gregorian_to_jd(ymdGregorian));
+		var r = cal.jd_to_julian(Calendar.gregorian_to_jd(ymdGregorian));
+	  ymdJulian = new YMD(r[0],r[1],r[2],false,true);
 		doh.is(new YMD(1752,9,3,false,true),ymdJulian);
 	},
 
@@ -54,7 +58,8 @@ function(
 		var ymdHebrew;
 		var ymdGregorian;
 		ymdHebrew = new YMD(5771,7,1);
-		ymdGregorian = Calendar.jd_to_gregorian(Calendar.hebrew_to_jd(ymdHebrew));
+		var r = cal.jd_to_gregorian(Calendar.hebrew_to_jd(ymdHebrew));
+		ymdGregorian = new YMD(r[0],r[1],r[2]);
 		doh.is(new YMD(2010,9,9),ymdGregorian);
 	},
 
@@ -62,7 +67,8 @@ function(
 		var ymdGregorian;
 		var ymdHebrew;
 		ymdGregorian = new YMD(2010,9,9);
-		ymdHebrew = Calendar.jd_to_hebrew(Calendar.gregorian_to_jd(ymdGregorian));
+		var r = cal.jd_to_hebrew(Calendar.gregorian_to_jd(ymdGregorian));
+	  ymdHebrew = new YMD(r[0],r[1],r[2],false,false,true);
 		doh.is(new YMD(5771,7,1),ymdHebrew);
 	},
 
@@ -70,15 +76,21 @@ function(
 		var ymdFrench;
 		var ymdGregorian;
 		ymdFrench = new YMD(2,11,9);
-		ymdGregorian = Calendar.jd_to_gregorian(Calendar.french_revolutionary_to_jd(ymdFrench));
+		var r = cal.jd_to_gregorian(Calendar.french_revolutionary_to_jd(ymdFrench));
+		ymdGregorian = new YMD(r[0],r[1],r[2]);
 		doh.is(new YMD(1794,7,27),ymdGregorian);
 	},
 
 	function nominalGregorianToFrenchRev(doh) {
 		var ymdGregorian;
 		var ymdFrench;
+		var r, d, dec, jou;
 		ymdGregorian = new YMD(1794,7,27);
-		ymdFrench = Calendar.jd_to_french_revolutionary(Calendar.gregorian_to_jd(ymdGregorian));
+		r= cal.jd_to_french_revolutionary(Calendar.gregorian_to_jd(ymdGregorian));
+		dec = r[2];
+		jou = r[3];
+		d = (dec-1)*10+jou;
+	  ymdFrench = new YMD(r[0],r[1],d,false,false,false,true);
 		doh.is(new YMD(2,11,9),ymdFrench);
 	}
 

@@ -40,8 +40,8 @@
  * @return new {@link YMD}
  * @type YMD
  */
-define(["dojo/_base/declare","./Calendar","nu/mine/mosher/util/Util"],
-function(declare,Calendar,Util) {
+define(["dojo/_base/declare","nu/mine/mosher/util/Util", "nu/mine/mosher/extern/ch/fourmilab/calendar/calendar","./Calendar"],
+function(declare,Util,cal,Calendar) {
 
 	"use strict";
 
@@ -316,13 +316,16 @@ function(declare,Calendar,Util) {
 			return null;
 		}
 		if (r.julian) {
-			return Calendar.jd_to_gregorian(Calendar.julian_to_jd(new YMD(r.year,r.month,r.day)));
+			var r = cal.jd_to_gregorian(Calendar.julian_to_jd(new YMD(r.year,r.month,r.day)));
+			return new YMD(r[0],r[1],r[2]);
 		}
 		if (r.hebrew) {
-			return Calendar.jd_to_gregorian(Calendar.hebrew_to_jd(new YMD(r.year,r.month,r.day)));
+			var r = cal.jd_to_gregorian(Calendar.hebrew_to_jd(new YMD(r.year,r.month,r.day)));
+			return new YMD(r[0],r[1],r[2]);
 		}
 		if (r.french) {
-			return Calendar.jd_to_gregorian(Calendar.french_revolutionary_to_jd(new YMD(r.year,r.month,r.day)));
+			var r = cal.jd_to_gregorian(Calendar.french_revolutionary_to_jd(new YMD(r.year,r.month,r.day)));
+			return new YMD(r[0],r[1],r[2]);
 		}
 		return new YMD(r.year,r.month,r.day,r.approx,r.julian);
 	};

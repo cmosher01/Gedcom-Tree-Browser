@@ -25,7 +25,7 @@ define([
 	"dojo/query",
 	"dojo/dom",
 	"dojo/dom-construct",
-	/*"dojo/io/script"*/ "dojo/_base/xhr",
+	"dojo/on",
 	"nu/mine/mosher/gedcom/model/GedcomTree",
 	"./GedcomExtractor"],
 
@@ -34,32 +34,35 @@ function(
 	query,
 	dom,
 	domConstruct,
-	xhr,
+	on,
 	GedcomTree,
 	GedcomExtractor) {
 
 	"use strict";
 
 	return function() {
-		var gedcom = null;
-	
-		/* remove any existing title from the document */
-		query("html head title").forEach(domConstruct.destroy);
-	
-		/* add our title to the document */
-		domConstruct.create("title",{innerHTML:"GRO Javascript"},query("html head")[0],"first");
-	
-		domConstruct.create("div",{id:"dropline"},query("html body")[0]);
-	
-		xhr.get({
-			url: "file:///C:/cygwin/home/Administrator/rapp.ged",
-			load: function(gc) {
-				var gtree = GedcomTree.parse(gc);
-				gedcom = new GedcomExtractor(gtree,dom.byId("dropline"));
-			},
-			error: function(e) {
-				alert("Error reading file "+this.url+": "+e);
+		var gedcom;
+		var chart;
+
+		var body = query("html body")[0];
+		var infile = domConstruct.create("input",{type:"file"},body);
+
+		on(infile,"change",function(e) {
+			var f = e.target.files[0];
+
+			var reader = new FileReader();
+			reader.onload = function() {
+				var gtree;
+
+				if (chart) {
+					domConstruct.destroy(chart);
+				}
+				chart = domConstruct.create("div",{},body);
+
+				gtree = GedcomTree.parse(reader.result);
+				gedcom = new GedcomExtractor(gtree,chart);
 			}
+			reader.readAsText(f,"windows-1252");
 		});
 
 	};

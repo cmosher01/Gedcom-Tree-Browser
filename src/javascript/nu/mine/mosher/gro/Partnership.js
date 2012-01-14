@@ -22,7 +22,7 @@
 
 /**
  * @fileoverview
- * Defines the {@link Person} class.
+ * Defines the {@link Partnership} class.
  */
 
 define([
@@ -31,8 +31,7 @@ define([
 	"nu/mine/mosher/util/Util",
 	"nu/mine/mosher/gfx/Point",
 	"nu/mine/mosher/gfx/Size",
-	"nu/mine/mosher/gfx/Rect",
-	"./Person"],
+	"nu/mine/mosher/gfx/Rect"],
 
 function(
 	declare,
@@ -40,8 +39,7 @@ function(
 	Util,
 	Point,
 	Size,
-	Rect,
-	Person) {
+	Rect) {
 
 	"use strict";
 

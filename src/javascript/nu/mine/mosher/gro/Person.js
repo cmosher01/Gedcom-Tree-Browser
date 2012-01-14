@@ -38,8 +38,7 @@ define([
 	"nu/mine/mosher/gfx/Rect",
 	"nu/mine/mosher/gfx/Dragger",
 	"nu/mine/mosher/gfx/ToolTip",
-	"nu/mine/mosher/gedcom/model/GedcomEvent",
-	"./Partnership"],
+	"nu/mine/mosher/gedcom/model/GedcomEvent"],
 
 function(
 	declare,
@@ -54,8 +53,7 @@ function(
 	Rect,
 	Dragger,
 	ToolTip,
-	GedcomEvent,
-	Partnership) {
+	GedcomEvent) {
 
 	"use strict";
 

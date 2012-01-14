@@ -7,27 +7,12 @@
 				"dojo/query",
 				"dojo/domReady!"],
 			function(query) {
-					query("#files").on("change", function(e) {
-						var files = Array.prototype.slice.call(e.target.files, 0);
-						var output = [];
-						var i, f;
-						files.forEach(function (f) {
-							output.push(
-								'<li><b>',
-								f.name,
-								'</b> (',
-								f.type || 'n/a',
-								') - ',
-								f.size,
-								' bytes.</li>');
-						});
-						query("#list")[0].innerHTML = "<ul>"+output.join("")+"</ul>";
-
-						f = files[0]; // just do the first file
+					query("#file").on("change", function(e) {
+						var f = e.target.files[0];
 
 						var reader = new FileReader();
 						reader.onload = function() {
-							query("#fff")[0].innerHTML = reader.result;
+							var contents = reader.result;
 						}
 						reader.readAsText(f,"windows-1252");
 					});
@@ -35,8 +20,6 @@
 		</script>
 	</head>
 	<body>
-		<input type="file" id="files" name="files[]" multiple></input>
-		<output id="list"></output>
-		<pre id="fff"></pre>
+		<input type="file" id="file"></input>
 	</body>
 </html>

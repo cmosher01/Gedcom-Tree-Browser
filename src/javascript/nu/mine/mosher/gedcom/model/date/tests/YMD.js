@@ -61,6 +61,13 @@ function(
 			ymd = new YMD(1966,7,3);
 			d = ymd.getExactDate();
 			doh.is(d.toUTCString(),"Sun, 03 Jul 1966 00:00:00 GMT");
+		},
+
+		function circularDependencyYmdCalendar(doh) {
+			var ymd = YMD.fromParserResult({year:1733,month:1,day:27,julian:true});
+			doh.is(ymd.getYear(),1733);
+			doh.is(ymd.getMonth(),2);
+			doh.is(ymd.getDay(),7);
 		}
 
 	]);

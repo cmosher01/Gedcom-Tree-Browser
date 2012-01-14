@@ -34,8 +34,8 @@
  * @throws
  * @type Calendar
  */
-define(["dojo/_base/declare","nu/mine/mosher/extern/ch/fourmilab/calendar/calendar","./YMD"],
-function(declare,cal,YMD) {
+define(["dojo/_base/declare","nu/mine/mosher/extern/ch/fourmilab/calendar/calendar"],
+function(declare,cal) {
 
 	"use strict";
 
@@ -61,10 +61,12 @@ function(declare,cal,YMD) {
 	 * @return date in Gregorian calendar
 	 * @type YMD
 	 */
+/*remove circular dependency on YMD
 	Calendar.jd_to_gregorian = function(jd) {
 		var r = cal.jd_to_gregorian(jd);
-	    return new YMD(r[0],r[1],r[2]);
+	  return new YMD(r[0],r[1],r[2]);
 	};
+*/
 
 	/**
 	 * Converts Julian date to JD
@@ -82,11 +84,12 @@ function(declare,cal,YMD) {
 	 * @return date in Julian calendar
 	 * @type YMD
 	 */
+/*remove circular dependency on YMD
 	Calendar.jd_to_julian = function(jd) {
 		var r = cal.jd_to_julian(jd);
-	    return new YMD(r[0],r[1],r[2],false,true);
+	  return new YMD(r[0],r[1],r[2],false,true);
 	};
-
+*/
 	/**
 	 * Converts Hebrew date to JD
 	 * @param {YMD} ymd
@@ -104,11 +107,13 @@ function(declare,cal,YMD) {
 	 * @return date in Hebrew calendar
 	 * @type YMD
 	 */
+/*remove circular dependency on YMD
 	Calendar.jd_to_hebrew = function(jd)
 	{
 		var r = cal.jd_to_hebrew(jd);
-	    return new YMD(r[0],r[1],r[2],false,false,true);
+	  return new YMD(r[0],r[1],r[2],false,false,true);
 	};
+*/
 
 	/**
 	 * Converts French Revolutionary date to JD
@@ -131,6 +136,7 @@ function(declare,cal,YMD) {
 	 * @return date in French Revolutionary calendar
 	 * @type YMD
 	 */
+/*remove circular dependency on YMD
 	Calendar.jd_to_french_revolutionary = function(jd)
 	{
 		var r, d, dec, jou;
@@ -138,8 +144,9 @@ function(declare,cal,YMD) {
 		dec = r[2];
 		jou = r[3];
 		d = (dec-1)*10+jou;
-	    return new YMD(r[0],r[1],d,false,false,false,true);
+	  return new YMD(r[0],r[1],d,false,false,false,true);
 	};
+*/
 
 	return Calendar;
 });
