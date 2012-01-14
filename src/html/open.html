@@ -1,31 +1,42 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<link rel="stylesheet" type="text/css" href="../javascript/dijit/themes/tundra/tundra.css" media="screen">
 		<script src="../javascript/dojo/dojo.js"></script>
 		<script>
 			require([
-				"dojo/on",
-				"dojox/form/Uploader",
-				"dojox/form/uploader/plugins/HTML5",
+				"dojo/query",
 				"dojo/domReady!"],
-			function(on,Uploader) {
-				var u = new Uploader({
-					label: "Programmatic Uploader",
-					multiple: false,
-					uploadOnSelect: true,
-					url: "/cgi-bin/ged.sh"
-				},
-				"uploader");
-				u.reset();
-				on(u,"change",function(fl) { 
-					alert(fl[0].name);
-				} );
-				console.log(u.toString());
+			function(query) {
+					query("#files").on("change", function(e) {
+						var files = Array.prototype.slice.call(e.target.files, 0);
+						var output = [];
+						var i, f;
+						files.forEach(function (f) {
+							output.push(
+								'<li><b>',
+								f.name,
+								'</b> (',
+								f.type || 'n/a',
+								') - ',
+								f.size,
+								' bytes.</li>');
+						});
+						query("#list")[0].innerHTML = "<ul>"+output.join("")+"</ul>";
+
+						f = files[0]; // just do the first file
+
+						var reader = new FileReader();
+						reader.onload = function() {
+							query("#fff")[0].innerHTML = reader.result;
+						}
+						reader.readAsText(f,"windows-1252");
+					});
 			});
 		</script>
 	</head>
-	<body class="tundra">
-		<div id="uploader"></div>
+	<body>
+		<input type="file" id="files" name="files[]" multiple></input>
+		<output id="list"></output>
+		<pre id="fff"></pre>
 	</body>
 </html>
