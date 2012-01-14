@@ -21,20 +21,18 @@
  */
 
 define([
-	"dojo/_base/declare",
-	"dojo/query",
-	"dojo/dom",
+	"dojo/_base/window",
 	"dojo/dom-construct",
 	"dojo/on",
+	"dojox/form/Uploader",
 	"nu/mine/mosher/gedcom/model/GedcomTree",
 	"./GedcomExtractor"],
 
 function(
-	declare,
-	query,
-	dom,
+	win,
 	domConstruct,
 	on,
+	Uploader,
 	GedcomTree,
 	GedcomExtractor) {
 
@@ -44,25 +42,18 @@ function(
 		var gedcom;
 		var chart;
 
-		var body = query("html body")[0];
-		var infile = domConstruct.create("input",{type:"file"},body);
-
-		on(infile,"change",function(e) {
-			var f = e.target.files[0];
-
+		var u = new Uploader({label: "Open GEDCOM file..."},domConstruct.create("div",{},win.body()));
+		u.reset();
+		on(u,"change",function() {
 			var reader = new FileReader();
 			reader.onload = function() {
-				var gtree;
-
 				if (chart) {
 					domConstruct.destroy(chart);
 				}
-				chart = domConstruct.create("div",{},body);
-
-				gtree = GedcomTree.parse(reader.result);
-				gedcom = new GedcomExtractor(gtree,chart);
-			}
-			reader.readAsText(f,"windows-1252");
+				chart = domConstruct.create("div",{},win.body());
+				gedcom = new GedcomExtractor(GedcomTree.parse(reader.result),chart);
+			};
+			reader.readAsText(u._files[0],"windows-1252");
 		});
 
 	};
