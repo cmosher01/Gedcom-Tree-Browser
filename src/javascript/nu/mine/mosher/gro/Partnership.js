@@ -123,7 +123,7 @@ constructor: function(gid,husb,wife,rchil,revt,container) {
 		this.divChildConn = null;
 	}
 
-	this.calc();
+//	this.calc();
 },
 
 getID: function() {

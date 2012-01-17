@@ -157,6 +157,15 @@ function(
 		}
 	});
 
+	Rect.fromPos = function(pos) {
+		return new Rect(new Point(pos.x,pos.y),new Size(pos.w,pos.h));
+	}
+	Rect.fromBox = function(box) {
+		return new Rect(new Point(box.l,box.t),new Size(box.w,box.h));
+	}
+	Rect.fromBoxFull = function(box) {
+		return new Rect(new Point(box.left,box.top),new Size(box.width,box.height));
+	}
 
 	/**
 	 * Gets the given HTMLElement's location (offset).
@@ -165,6 +174,11 @@ function(
 	 * @type Rect
 	 */
 	Rect.ofDiv = function(e) {
+/*
+		if (e.offsetWidth == 0) {
+			return new Rect(new Point(e.style.left,e.style.top),new Size(e.style.width,e.style.height));
+		}
+*/
 		return new Rect(new Point(e.offsetLeft,e.offsetTop),new Size(e.offsetWidth,e.offsetHeight));
 	};
 

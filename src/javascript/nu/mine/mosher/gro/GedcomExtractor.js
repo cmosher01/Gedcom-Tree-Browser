@@ -29,6 +29,8 @@ define([
 	"dojo/_base/declare",
 	"dojo/_base/lang",
 	"dojo/_base/array",
+	"dojo/_base/window",
+	"dojo/dom-construct",
 	"nu/mine/mosher/util/Util",
 	"nu/mine/mosher/gfx/Point",
 	"nu/mine/mosher/gfx/Selector",
@@ -50,6 +52,8 @@ function(
 	declare,
 	lang,
 	arr,
+	win,
+	domConstruct,
 	Util,
 	Point,
 	Selector,
@@ -116,6 +120,7 @@ constructor: function(gedcomtree,container) {
 	this.selection = [];
 	this.selectionPartners = {};
 
+	this.tempdiv = domConstruct.create("div",{},win.body());
 	this.extract();
 
 	this.selector = new Selector(
@@ -162,6 +167,7 @@ calc: function() {
  */
 extract: function() {
 	var rchil;
+
 	rchil = this.t.getRoot().getChildren();
 
 	Util.forEach(rchil, lang.hitch(this,function(node) {
@@ -186,6 +192,10 @@ extract: function() {
 
 	Util.forEach(this.mperson, function(indi) {
 		indi.getEventsFromPartnerships();
+	});
+
+	Util.forEach(this.mperson, function(indi) {
+		indi.formatEvents();
 	});
 },
 
@@ -275,7 +285,7 @@ extractPerson: function(indi) {
 	line = indi.line;
 	pm = new PersonModel(line.getID(),nam,xy,revtm);
 	this.model.addPerson(pm);
-	return new Person(pm,this,this.container);
+	return new Person(pm,this,this.container,this.tempdiv);
 },
 
 /**

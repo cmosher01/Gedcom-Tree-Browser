@@ -25,6 +25,7 @@ define([
 	"dojo/dom-construct",
 	"dojo/on",
 	"dojox/form/Uploader",
+	"nu/mine/mosher/gfx/Progress",
 	"nu/mine/mosher/gedcom/model/GedcomTree",
 	"./GedcomExtractor"],
 
@@ -33,6 +34,7 @@ function(
 	domConstruct,
 	on,
 	Uploader,
+	Progress,
 	GedcomTree,
 	GedcomExtractor) {
 
@@ -50,8 +52,10 @@ function(
 				if (chart) {
 					domConstruct.destroy(chart);
 				}
-				chart = domConstruct.create("div",{},win.body());
+				chart = domConstruct.create("div"/*,{},win.body()*/);
 				gedcom = new GedcomExtractor(GedcomTree.parse(reader.result),chart);
+				gedcom.calc();
+				domConstruct.place(chart,win.body());
 			};
 			reader.readAsText(u._files[0],"windows-1252");
 		});

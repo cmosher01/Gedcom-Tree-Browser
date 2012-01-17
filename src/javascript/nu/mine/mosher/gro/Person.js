@@ -31,6 +31,7 @@ define([
 	"dojo/_base/window",
 	"dojo/dom-class",
 	"dojo/dom-construct",
+	"dojo/dom-geometry",
 	"dojo/query",
 	"nu/mine/mosher/util/Util",
 	"nu/mine/mosher/gfx/Point",
@@ -46,6 +47,7 @@ function(
 	win,
 	domClass,
 	domConstruct,
+	domGeometry,
 	query,
 	Util,
 	Point,
@@ -65,7 +67,7 @@ function(
 		 * @return new {@link Person}
 		 * @type Person
 		 */
-		constructor: function(model,dragHandler,container) {
+		constructor: function(model,dragHandler,container,tempdiv) {
 			this.model = model;
 
 			/**
@@ -85,6 +87,8 @@ function(
 			this.container = container;
 
 			this.tooltips = []; // just so we can close them upon shrinking
+
+			this.tempdiv = tempdiv;
 
 			/**
 			 * non-expanded display DIV of this {@link Person}
@@ -212,7 +216,7 @@ function(
 		 * @type HTMLElement
 		 */
 		createDiv: function(pos) {
-			var div;
+			var div, contentBox;
 			div = Util.createHtmlElement("div");
 
 			div.className = "person";
@@ -220,18 +224,23 @@ function(
 
 			div.style.position = "absolute";
 			div.tabindex = 0;
-			div.style.left = Util.px(0);
-			div.style.top = Util.px(0);
 			div.style.textAlign = "center";
-			div.style.visiblity = "hidden";
+
 			div.appendChild(win.doc.createTextNode(this.model.getName()));
 
-			this.container.appendChild(div);
+			
+			div.style.left = Util.px(0);
+			div.style.top = Util.px(0);
+			this.tempdiv.appendChild(div);
+			contentBox = domGeometry.getContentBox(div);
+			this.tempdiv.removeChild(div);
+			div.style.width = Util.px(contentBox.w);
+			div.style.height = Util.px(contentBox.h);
 
-			div.style.width = Util.px(div.clientWidth);
 			div.style.left = Util.px(pos.getX());
 			div.style.top = Util.px(pos.getY());
-			div.style.visiblity = "visible";
+
+			this.container.appendChild(div);
 
 			return div;
 		},
@@ -268,7 +277,24 @@ function(
 		 * @type Rect
 		 */
 		getRect: function() {
-			return Rect.ofDiv(this.divCur);
+			var d = this.divCur;
+
+			if (d.offsetWidth == 0) {
+				/* at load time we don't have the actualized position,
+				we only have our manually set styles, which represent the
+				content box, so we need to add padding and border
+				width and height */
+				return this.getRectFromStyle();
+			}
+			return Rect.fromPos(domGeometry.position(d,true));
+		},
+
+		getRectFromStyle: function(d) {
+			var x, r;
+			var d = this.divCur;
+			x = domGeometry.getPadBorderExtents(d);
+			r = Rect.fromBoxFull(d.style);
+			return new Rect(r.getPos(),new Size(r.getWidth()+x.w,r.getHeight()+x.h))
 		},
 
 		/**
@@ -416,30 +442,35 @@ function(
 		},
 
 		getEventsFromPartnerships: function() {
-			var e;
-
 			Util.forEach(this.spouseIn, lang.hitch(this, function(part) {
 				Util.forEach(part.getEvents(), lang.hitch(this, function(evt) {
 					this.model.getEvents().push(evt);
 				}));
 			}));
+		},
+
+		formatEvents: function() {
+			var e, contentBox;
 
 			this.model.getEvents().sort(GedcomEvent.order);
 
 			e = this.createEventTable();
 			this.divExp.appendChild(e);
 
-			this.divExp.style.visiblity = "hidden";
 			var x = this.divExp.style.left;
 			var y = this.divExp.style.top;
+
 			this.divExp.style.left = Util.px(0);
 			this.divExp.style.top = Util.px(0);
-			this.container.appendChild(this.divExp);
-			this.divExp.style.width = Util.px(this.divExp.clientWidth);
+			this.tempdiv.appendChild(this.divExp);
+			contentBox = domGeometry.getContentBox(this.divExp);
+			this.tempdiv.removeChild(this.divExp);
+			this.divExp.style.width = Util.px(contentBox.w);
+			this.divExp.style.height = Util.px(contentBox.h);
+
 			this.divExp.style.left = x;
 			this.divExp.style.top = y;
-			this.container.removeChild(this.divExp);
-			this.divExp.style.visiblity = "visible";
+
 		}
 	});
 

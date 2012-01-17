@@ -33,7 +33,8 @@
  * @throws always throws an error
  */
 
-define(["dojo/_base/declare","dojo/_base/window"], function(declare,win) {
+define(["dojo/_base/declare","dojo/_base/window"],
+function(declare,win) {
 
 	"use strict";
 
