@@ -126,14 +126,14 @@ constructor: function(gedcomtree,container) {
 	this.selector = new Selector(
 		this.container,
 		lang.hitch(this, function(rect) {
-			Util.forEach(this.mperson,function(person) {
+			Util.forEachProp(this.mperson,function(person) {
 				person.select(person.hit(rect));
 			});
 		}),
 		lang.hitch(this, function() {
 			this.selection = [];
 			this.selectionPartners = {};
-			Util.forEach(this.mperson,lang.hitch(this,function(person) {
+			Util.forEachProp(this.mperson,lang.hitch(this,function(person) {
 				if (person.isSelected()) {
 					this.selectPerson(person);
 				}
@@ -144,10 +144,10 @@ constructor: function(gedcomtree,container) {
 
 selectPerson: function(person) {
 	this.selection.push(person);
-	Util.forEach(person.getChildIn(),lang.hitch(this,function(part) {
+	person.getChildIn().forEach(lang.hitch(this,function(part) {
 		this.selectionPartners[part.getID()] = part;
 	}));
-	Util.forEach(person.getSpouseIn(),lang.hitch(this,function(part) {
+	person.getSpouseIn().forEach(lang.hitch(this,function(part) {
 		this.selectionPartners[part.getID()] = part;
 	}));
 },
@@ -156,7 +156,7 @@ selectPerson: function(person) {
  * Calculates every {@link Partnership}.
  */
 calc: function() {
-	Util.forEach(this.mpartnership, function(p) {
+	Util.forEachProp(this.mpartnership,function(p) {
 		p.calc();
 	});
 },
@@ -170,31 +170,31 @@ extract: function() {
 
 	rchil = this.t.getRoot().getChildren();
 
-	Util.forEach(rchil, lang.hitch(this,function(node) {
+	rchil.forEach(lang.hitch(this,function(node) {
 		if (node.line.getTag() === "SOUR") {
 			this.msour[node.line.getID()] = this.extractSource(node);
 		}
 	}));
-	Util.forEach(rchil, lang.hitch(this,function(node) {
+	rchil.forEach(lang.hitch(this,function(node) {
 		if (node.line.getTag() === "INDI") {
 			this.mperson[node.line.getID()] = this.extractPerson(node);
 		}
 	}));
-	Util.forEach(rchil, lang.hitch(this,function(node) {
+	rchil.forEach(lang.hitch(this,function(node) {
 		if (node.line.getTag() === "FAM") {
 			this.mpartnership[node.line.getID()] = this.extractParnership(node);
 		}
 	}));
 
-	Util.forEach(this.mperson, function(indi) {
+	Util.forEachProp(this.mperson,function(indi) {
 		indi.enlargeDropLine();
 	});
 
-	Util.forEach(this.mperson, function(indi) {
+	Util.forEachProp(this.mperson,function(indi) {
 		indi.getEventsFromPartnerships();
 	});
 
-	Util.forEach(this.mperson, function(indi) {
+	Util.forEachProp(this.mperson,function(indi) {
 		indi.formatEvents();
 	});
 },
@@ -202,7 +202,7 @@ extract: function() {
 extractRepoName: function(repo) {
 	var n;
 	n = "";
-	Util.forEach(repo.getChildren(), lang.hitch(this,function(node) {
+	repo.getChildren().forEach(lang.hitch(this,function(node) {
 		if (node.line.getTag() === "NAME") {
 			n = node.line.getVal();
 		}
@@ -214,7 +214,7 @@ extractSource: function(sour) {
 	var auth, titl, publ, repo, text;
 	publ = titl = auth = "[unknown]";
 	repo = text = "";
-	Util.forEach(sour.getChildren(), lang.hitch(this,function(node) {
+	sour.getChildren().forEach(lang.hitch(this,function(node) {
 		if (node.line.getTag() === "AUTH") {
 			auth = node.line.getVal();
 		} else if (node.line.getTag() === "TITL") {
@@ -239,7 +239,7 @@ extractCitation: function(sour) {
 	var page = "";
 	var quay = null;
 
-	Util.forEach(sour.getChildren(), lang.hitch(this,function(node) {
+	sour.getChildren().forEach(lang.hitch(this,function(node) {
 		if (node.line.getTag() === "PAGE") {
 			page = node.line.getVal();
 		} else if (node.line.getTag() === "TEXT") {
@@ -259,15 +259,13 @@ extractCitation: function(sour) {
  * @type Person
  */
 extractPerson: function(indi) {
-	var that, nam, xy, m, revt, line, revtm, e, pm;
-
-	that = this;
+	var nam, xy, m, revt, line, revtm, e, pm;
 
 	nam = "[unknown]";
 	revt = [];
 	revtm = [];
 	xy = new Point(0,0);
-	Util.forEach(indi.getChildren(), function(node) {
+	indi.getChildren().forEach(lang.hitch(this,function(node) {
 		if (node.line.getTag() === "NAME") {
 			nam = node.line.getVal().replace(/\//g,"");
 		} else if (node.line.getTag() === "_XY") {
@@ -276,11 +274,11 @@ extractPerson: function(indi) {
 				xy = new Point(m[1],m[2]);
 			}
 		} else if (GedcomTag.isIndiEvent(node.line.getTag())) {
-			e = that.extractEvent(node);
+			e = this.extractEvent(node);
 			revt.push(e);
 			revtm.push(e);
 		}
-	});
+	}));
 
 	line = indi.line;
 	pm = new PersonModel(line.getID(),nam,xy,revtm);
@@ -296,9 +294,8 @@ extractPerson: function(indi) {
  * @type Partnership
  */
 extractParnership: function(fam) {
-	var that, husb, wife, rchil, revt, line, e, pm;
+	var husb, wife, rchil, revt, line, e, pm;
 	var husbm, wifem, rchilm, revtm;
-	that = this;
 	husb = null;
 	husbm = null;
 	wife = null;
@@ -307,22 +304,22 @@ extractParnership: function(fam) {
 	rchilm = [];
 	revt = [];
 	revtm = [];
-	Util.forEach(fam.getChildren(), function(node) {
+	fam.getChildren().forEach(lang.hitch(this,function(node) {
 		if (node.line.getTag() === "HUSB") {
-			husb = that.mperson[node.line.getPointer()];
-			husbm = that.model.mPerson[node.line.getPointer()];
+			husb = this.mperson[node.line.getPointer()];
+			husbm = this.model.mPerson[node.line.getPointer()];
 		} else if (node.line.getTag() === "WIFE") {
-			wife = that.mperson[node.line.getPointer()];
-			wifem = that.model.mPerson[node.line.getPointer()];
+			wife = this.mperson[node.line.getPointer()];
+			wifem = this.model.mPerson[node.line.getPointer()];
 		} else if (node.line.getTag() === "CHIL") {
-			rchil.push(that.mperson[node.line.getPointer()]);
-			rchilm.push(that.model.mPerson[node.line.getPointer()]);
+			rchil.push(this.mperson[node.line.getPointer()]);
+			rchilm.push(this.model.mPerson[node.line.getPointer()]);
 		} else if (GedcomTag.isFamEvent(node.line.getTag())) {
-			e = that.extractEvent(node);
+			e = this.extractEvent(node);
 			revt.push(e);
 			revtm.push(e);
 		}
-	});
+	}));
 	line = fam.line;
 	this.model.addPartnership(new PartnershipModel(line.getID(),husbm,wifem,rchilm,revtm));
 	return new Partnership(line.getID(),husb,wife,rchil,revt,this.container);
@@ -336,20 +333,19 @@ extractParnership: function(fam) {
  * @type GedcomEvent
  */
 extractEvent: function(evt) {
-	var that, typ, gdate, place, note, cit;
-	that = this;
+	var typ, gdate, place, note, cit;
 	gdate = DatePeriod.UNKNOWN;
 	place = "";
 	note = "";
 	typ = this.extractEventName(evt);
 	cit = null;
-	Util.forEach(evt.getChildren(), function(node) {
+	evt.getChildren().forEach(lang.hitch(this,function(node) {
 		if (node.line.getTag() === "DATE") {
-			gdate = that.extractDate(node.line.getVal());
+			gdate = this.extractDate(node.line.getVal());
 		} else if (node.line.getTag() === "PLAC") {
 			place = node.line.getVal();
 		} else if (node.line.getTag() === "SOUR") {
-			cit = that.extractCitation(node);
+			cit = this.extractCitation(node);
 		} else if (node.line.getTag() === "NOTE") {
 			if (node.line.isPointer()) {
 				note = node.line.getRef().line.getVal();
@@ -357,7 +353,7 @@ extractEvent: function(evt) {
 				note = node.line.getVal();
 			}
 		}
-	});
+	}));
 	return new GedcomEvent(typ,gdate,place,cit,note);
 },
 
@@ -375,7 +371,7 @@ extractEventName: function(evt) {
 	val = "";
 
 	if (evt.line.getTag() === "EVEN") {
-		Util.forEach(evt.getChildren(), function(node) {
+		evt.getChildren().forEach(function(node) {
 			if (node.line.getTag() === "TYPE") {
 				nam = node.line.getVal();
 			}
@@ -423,7 +419,7 @@ extractDate: function(s) {
 onBeginDrag: function(hitPerson) {
 	if (this.selection.length > 0) {
 		if (arr.indexOf(this.selection,hitPerson) < 0) {
-			Util.forEach(this.selection,function(person) {
+			this.selection.forEach(function(person) {
 				person.select(false);
 			});
 			this.selection = [];
@@ -435,17 +431,17 @@ onBeginDrag: function(hitPerson) {
 		this.selectPerson(hitPerson);
 		this.tempSelection = true;
 	}
-	Util.forEach(this.selection,function(person) {
+	this.selection.forEach(function(person) {
 		person.onBeginDrag();
 	});
 },
 
 onDrag: function(delta) {
 	if (this.selection.length > 0) {
-		Util.forEach(this.selection,function(person) {
+		this.selection.forEach(function(person) {
 			person.onDrag(delta);
 		});
-		Util.forEach(this.selectionPartners,function(partnership) {
+		Util.forEachProp(this.selectionPartners,function(partnership) {
 			partnership.calc();
 		});
 	}
@@ -453,7 +449,7 @@ onDrag: function(delta) {
 
 onEndDrag: function() {
 	if (this.selection.length > 0) {
-		Util.forEach(this.selection,function(person) {
+		this.selection.forEach(function(person) {
 			person.onEndDrag();
 		});
 	}

@@ -28,6 +28,7 @@
 define([
 	"dojo/_base/declare",
 	"dojo/_base/lang",
+	"dojo/dom-construct",
 	"nu/mine/mosher/util/Util",
 	"nu/mine/mosher/gfx/Point",
 	"nu/mine/mosher/gfx/Size",
@@ -36,6 +37,7 @@ define([
 function(
 	declare,
 	lang,
+	domConstruct,
 	Util,
 	Point,
 	Size,
@@ -105,7 +107,7 @@ constructor: function(gid,husb,wife,rchil,revt,container) {
 		this.wife.addSpouseIn(this);
 	}
 
-	Util.forEach(this.rchil, lang.hitch(this,function(c) {
+	this.rchil.forEach(lang.hitch(this,function(c) {
 		c.addChildIn(this);
 	}));
 
@@ -113,7 +115,7 @@ constructor: function(gid,husb,wife,rchil,revt,container) {
 	this.divRight = this.createDiv();
 
 	this.divChild = [];
-	Util.forEach(rchil, lang.hitch(this,function() {
+	rchil.forEach(lang.hitch(this,function() {
 		this.divChild.push(this.createDiv());
 	}));
 
@@ -147,7 +149,7 @@ getEvents: function() {
  */
 createDiv: function() {
 	var div;
-	div = Util.createHtmlElement("div");
+	div = domConstruct.create("div");
 	div.className = "partnership";
 	div.style.position = "absolute";
 	this.container.appendChild(div);
@@ -177,7 +179,7 @@ calc: function() {
 
 	// find topmost child
 	my = Number.MAX_VALUE;
-	Util.forEach(this.rchil, function(chil) {
+	this.rchil.forEach(function(chil) {
 		cy = chil.getRect().getTop();
 		if (cy < my) {
 			my = cy;

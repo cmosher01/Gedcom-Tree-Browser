@@ -27,11 +27,13 @@
 
 define([
 	"dojo/_base/declare",
+	"dojo/_base/lang",
 	"nu/mine/mosher/util/Util",
 	"nu/mine/mosher/util/TreeNode",
 	"./GedcomLine"],
 function(
 	declare,
+	lang,
 	Util,
 	TreeNode,
 	GedcomLine) {
@@ -132,17 +134,14 @@ function(
 		 * @param {String} gc entire GEDCOM file
 		 */
 		parseAppend: function(gc) {
-			var rs, tre;
+			var rs = Util.getLines(gc);
 
-			rs = Util.getLines(gc);
-
-			tre = this;
-			Util.forEach(rs, function(s) {
+			rs.forEach(lang.hitch(this,function(s) {
 				if (s.length > 0) { // skip blank lines
 					// parse the line and add it to this tree
-					tre.appendLine(GedcomLine.parse(s));
+					this.appendLine(GedcomLine.parse(s));
 				}
-			});
+			}));
 		}
 	});
 
@@ -167,10 +166,9 @@ function(
 	 * @param {TreeNode} p root of tree to process
 	 */
 	GedcomTree.concatenatePrivateHelper = function(p) {
-		var rdel;
-		rdel = [];
+		var rdel = [];
 
-		Util.forEach(p.getChildren(), function(c) {
+		p.getChildren().forEach(function(c) {
 			GedcomTree.concatenatePrivateHelper(c);
 			switch (c.line.getTag()) {
 				case "CONT":
@@ -179,7 +177,7 @@ function(
 					rdel.push(c);
 			}
 		});
-		Util.forEach(rdel, function(c) {
+		rdel.forEach(function(c) {
 			c.removeFromParent();
 		});
 	};
@@ -188,7 +186,7 @@ function(
 		var mapIdToNode = {};
 
 		// go thru top-level lines, with IDs, and put them into a map
-		Util.forEach(p.getChildren(), function(node) {
+		p.getChildren().forEach(function(node) {
 			// don't need to recurse, because only top-level
 			// lines have IDs
 			if (node.line.hasID()) {
@@ -201,7 +199,7 @@ function(
 	};
 
 	GedcomTree.resolveReferencesResolverPrivateHelper = function(map,p) {
-		Util.forEach(p.getChildren(), function(node) {
+		p.getChildren().forEach(function(node) {
 			GedcomTree.resolveReferencesResolverPrivateHelper(map,node);
 			if (node.line.isPointer()) {
 				node.line.setRef(map[node.line.getPointer()]);

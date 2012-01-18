@@ -35,64 +35,6 @@ function(
 
 
 	tests.register("Util",[
-		function forEachNominal(doh) {
-			var r, rr;
-
-			r = ["a","b","c"];
-
-			rr = [];
-			Util.forEach(r,function(v) {
-				rr.push(v);
-			});
-
-			doh.is(r,rr);
-		},
-
-		function forEachNull(doh) {
-			var r, rr;
-
-			r = ["a",null,"c"];
-
-			rr = [];
-			Util.forEach(r,function(v) {
-				rr.push(v);
-			});
-
-			doh.is(r,rr);
-		},
-
-		function forEachDeleted(doh) {
-			var r, rr;
-
-			r = ["a","b","c"];
-			delete r[1];
-
-			rr = [];
-			Util.forEach(r,function(v) {
-				rr.push(v);
-			});
-
-			doh.is(["a","c"],rr);
-		},
-
-		function forEachSparse(doh) {
-			var r, rr;
-
-			r = [];
-			r[0] = "a";
-			r[10000] = "b";
-
-			rr = [];
-			Util.forEach(r,function(v) {
-				rr.push(v);
-			});
-
-			doh.is(["a","b"],rr);
-		},
-
-
-
-
 
 		function consolodateNominal(doh) {
 			var r, rr;
@@ -280,38 +222,6 @@ function(
 		},
 
 
-		function digintNominal(doh) {
-			doh.is("068",Util.digint(68,3));
-		},
-
-		function digintNoneAdded(doh) {
-			doh.is("68",Util.digint(68,2));
-		},
-
-		function digintTooBig(doh) {
-			doh.is("68",Util.digint(68,1));
-		},
-
-		function digintMultiDigitZero(doh) {
-			doh.is("0000000",Util.digint(0,7));
-		},
-
-		function digintZero(doh) {
-			doh.is("0",Util.digint(0,1));
-		},
-
-		function digintNegativeNominal(doh) {
-			doh.is("-00027",Util.digint(-27,5));
-		},
-
-		function digintFractional(doh) {
-			doh.is("-00027",Util.digint(-27.47,5));
-		},
-
-		function digintFractionalRoundUp(doh) {
-			doh.is("-00028",Util.digint(-27.58,5));
-		},
-
 		function undefinedFunction(doh) {
 			doh.is("undefined",typeof Util.undefined());
 		},
@@ -324,8 +234,37 @@ function(
 		function InfinityFunction(doh) {
 			doh.is("number",typeof Util.Infinity());
 			doh.is(1/0,Util.Infinity());
-		}
+		},
 
+		function getLinesNominalLF()
+		{
+			var s = "a\nb\nc";
+			var r = Util.getLines(s);
+			doh.is(3,r.length);
+			doh.is("a",r[0]);
+			doh.is("b",r[1]);
+			doh.is("c",r[2]);
+		},
+
+		function getLinesNominalCRLF()
+		{
+			var s = "a\r\nb\r\nc";
+			var r = Util.getLines(s);
+			doh.is(3,r.length);
+			doh.is("a",r[0]);
+			doh.is("b",r[1]);
+			doh.is("c",r[2]);
+		},
+
+		function getLinesNominalCR()
+		{
+			var s = "a\rb\rc";
+			var r = Util.getLines(s);
+			doh.is(3,r.length);
+			doh.is("a",r[0]);
+			doh.is("b",r[1]);
+			doh.is("c",r[2]);
+		}
 	]);
 
 });

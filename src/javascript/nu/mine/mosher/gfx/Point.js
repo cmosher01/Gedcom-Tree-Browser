@@ -34,7 +34,7 @@
  * @return new {@link Point}
  * @type Point
  */
-define(["dojo/_base/declare","dojo/_base/window"], function(declare,win) {
+define(["dojo/_base/declare"], function(declare) {
 
 	"use strict";
 
@@ -84,30 +84,6 @@ define(["dojo/_base/declare","dojo/_base/window"], function(declare,win) {
 		}
 
 	});
-
-	Point.fromBrowserEvent = function(e) {
-		var x, y;
-		x = y = 0;
-		if (e.pageX) {
-			x = e.pageX;
-		} else if (e.clientX) {
-		   x = e.clientX + (
-				   win.doc.documentElement.scrollLeft ?
-				   win.doc.documentElement.scrollLeft :
-				   win.doc.body.scrollLeft
-		   );
-		}
-		if (e.pageY) {
-			y = e.pageY;
-		} else if (e.clientY) {
-		   y = e.clientY + (
-				   win.doc.documentElement.scrollTop ?
-				   win.doc.documentElement.scrollTop :
-				   win.doc.body.scrollTop
-		   );
-		}
-		return new Point(x,y);
-	};
 
 	return Point;
 

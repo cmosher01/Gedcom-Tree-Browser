@@ -27,14 +27,17 @@
 
 				mods.forEach(function (mod) {
 					var urlLink = "../javascript/util/doh/runner.html?test="+mod+"/tests/tests";
-					var li = domConstruct.create("li",{},ul);
-					domConstruct.create("a" ,{href:urlLink,innerHTML:mod},li);
+					createLink(ul,urlLink,mod);
 				});
 
 				var modlist = mods.map(function(mod) { return mod+"/tests/tests"; }).join(",");
-				var urlLink = "../javascript/util/doh/runner.html?test="+modlist+"/tests/tests";
-				var li = domConstruct.create("li",{},ul);
-				domConstruct.create("a" ,{href:urlLink,innerHTML:"[all]"},li);
+				var urlLink = "../javascript/util/doh/runner.html?test="+modlist;
+				createLink(ul,urlLink,"[all]");
+
+				function createLink(ul,url,name) {
+					var li = domConstruct.create("li",{},ul);
+					domConstruct.create("a" ,{href:url,innerHTML:name},li);
+				}
 			});
 		</script>
 	</head>

@@ -26,6 +26,7 @@ define([
 	"dojo/_base/window",
 	"dojo/on",
 	"dojo/_base/event",
+	"dojo/dom-construct",
 	"./Point",
 	"./Size",
 	"./Rect",
@@ -37,6 +38,7 @@ function(
 	win,
 	on,
 	event,
+	domConstruct,
 	Point,
 	Size,
 	Rect,
@@ -80,9 +82,9 @@ function(
 				return true;
 			}
 
-			this.start = this.pos = Point.fromBrowserEvent(e);
+			this.start = this.pos = new Point(e.pageX,e.pageY);
 
-			this.div = Util.createHtmlElement("div");
+			this.div = domConstruct.create("div");
 			this.div.className = "selector";
 			this.div.style.position = "absolute";
 			win.doc.body.appendChild(this.div);
@@ -98,7 +100,7 @@ function(
 		},
 
 		moveHandler: function(e) {
-			this.pos = Point.fromBrowserEvent(e);
+			this.pos = new Point(e.pageX,e.pageY);
 
 			this.setDiv();
 

@@ -76,7 +76,7 @@ function(
 		},
 
 		moveToCursor: function(e) {
-			var p = Point.fromBrowserEvent(e);
+			var p = new Point(e.pageX,e.pageY);
 			var under = new Point(p.getX()+10,p.getY()+10);
 			var underoff = this.offscreen(under);
 			var over = new Point(p.getX()-10-this.div.clientWidth,p.getY()-10-this.div.clientHeight);

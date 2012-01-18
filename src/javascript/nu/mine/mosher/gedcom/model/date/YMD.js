@@ -40,8 +40,8 @@
  * @return new {@link YMD}
  * @type YMD
  */
-define(["dojo/_base/declare","nu/mine/mosher/util/Util", "nu/mine/mosher/extern/ch/fourmilab/calendar/calendar","./Calendar"],
-function(declare,Util,cal,Calendar) {
+define(["dojo/_base/declare","dojo/number","nu/mine/mosher/util/Util", "nu/mine/mosher/extern/ch/fourmilab/calendar/calendar","./Calendar"],
+function(declare,num,Util,cal,Calendar) {
 
 	"use strict";
 
@@ -199,11 +199,11 @@ function(declare,Util,cal,Calendar) {
 					return "[before]";
 				}
 			}
-			s += Util.digint(this.year,4);
+			s += num.format(this.year,{pattern:"0000"});
 			if (this.month > 0) {
-				s += "-"+Util.digint(this.month,2);
+				s += "-"+num.format(this.month,{pattern:"00"});
 				if (this.day > 0) {
-					s += "-"+Util.digint(this.day,2);
+					s += "-"+num.format(this.day,{pattern:"00"});
 				}
 			}
 			return s;

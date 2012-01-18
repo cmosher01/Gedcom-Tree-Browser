@@ -52,10 +52,10 @@ function(
 				if (chart) {
 					domConstruct.destroy(chart);
 				}
-				chart = domConstruct.create("div"/*,{},win.body()*/);
+				chart = domConstruct.create("div");
 				gedcom = new GedcomExtractor(GedcomTree.parse(reader.result),chart);
-				gedcom.calc();
 				domConstruct.place(chart,win.body());
+				gedcom.calc();
 			};
 			reader.readAsText(u._files[0],"windows-1252");
 		});

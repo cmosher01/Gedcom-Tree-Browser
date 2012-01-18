@@ -62,7 +62,7 @@ function(
 			this.upConnection = on(win.doc,"mouseup",lang.hitch(this,"upHandler"));
 			this.moveConnection = on(win.doc,"mousemove",lang.hitch(this,"moveHandler"));
 
-			this.origin = Point.fromBrowserEvent(e);
+			this.origin = new Point(e.pageX,e.pageY);
 
 			this.dragHandler.onBeginDrag(this.userArg);
 
@@ -77,7 +77,7 @@ function(
 		 * @type Boolean
 		 **/
 		moveHandler: function(e) {
-			var p = Point.fromBrowserEvent(e);
+			var p = new Point(e.pageX,e.pageY);
 
 			this.dragHandler.onDrag(new Size(p.getX()-this.origin.getX(),p.getY()-this.origin.getY()));
 

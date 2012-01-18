@@ -33,8 +33,8 @@
  * @throws always throws an error
  */
 
-define(["dojo/_base/declare","dojo/_base/window"],
-function(declare,win) {
+define(["dojo/_base/declare"],
+function(declare) {
 
 	"use strict";
 
@@ -131,19 +131,15 @@ function(declare,win) {
 	};
 
 	/**
-	 * Calls fn for each (non-undefined) element in r.
-	 * @param {Object} r Array
+	 * Calls fn for each enumerable own property in o.
+	 * @param {Object} o
 	 * @param {Function} fn function to call
 	 */
-	Util.forEach = function(r,fn) {
-		var i;
-		if (r.forEach) {
-			r.forEach(fn);
-		} else {
-			for (i in r) {
-				fn(r[i]);
-			}
-		}
+	Util.forEachProp = function(o,fn) {
+		var r = Object.keys(o);
+		r.forEach(function(i) {
+			fn(o[i]);
+		});
 	};
 
 	/**
@@ -165,11 +161,15 @@ function(declare,win) {
 	 * @type Array
 	 */
 	Util.getLines = function(s) {
-		// unify line terminators
+		/*
+			Unify line terminators.
+			We only need to handle converting
+			CR/LF, which would otherwise be
+			treated as two lines.
+		*/
 		s = s.replace(/\r\n/g,"\n");
-		s = s.replace(/\r/g,"\n");
 
-		// split string into lines
+		/* split string into lines */
 		return s.match(/^.*$/mg);
 	};
 
@@ -225,16 +225,6 @@ function(declare,win) {
 	};
 
 	/**
-	 * Creates a new HTMLElement with the given tag name.
-	 * @param {String} tag
-	 * @return a new HTMLElement
-	 * @type HTMLElement
-	 */
-	Util.createHtmlElement = function(tag) {
-		return win.doc.createElement(tag);
-	};
-
-	/**
 	 * Returns a string of n of c characters
 	 * @param n number of character
 	 * @param c character to repeat (defaults to space)
@@ -249,24 +239,6 @@ function(declare,win) {
 			c = " ";
 		}
 		return new Array(n+1).join(c);
-	};
-
-	/**
-	 * Pads number n to width d with leading zeroes. Number is rounded to int first.
-	 * @param n
-	 * @param d
-	 * @return number with leading zeroes
-	 * @type String
-	 */
-	Util.digint = function(n,d) {
-		var s, neg;
-		n = Math.round(n);
-		neg = (n < 0);
-		if (neg) {
-			n = -n;
-		}
-		s = ""+n;
-		return (neg ? "-": "")+Util.repstr(d-s.length,"0")+s;
 	};
 
 	/**

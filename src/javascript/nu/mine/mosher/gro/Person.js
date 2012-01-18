@@ -217,7 +217,7 @@ function(
 		 */
 		createDiv: function(pos) {
 			var div, contentBox;
-			div = Util.createHtmlElement("div");
+			div = domConstruct.create("div");
 
 			div.className = "person";
 			div.style.zIndex = 1;
@@ -228,7 +228,7 @@ function(
 
 			div.appendChild(win.doc.createTextNode(this.model.getName()));
 
-			
+
 			div.style.left = Util.px(0);
 			div.style.top = Util.px(0);
 			this.tempdiv.appendChild(div);
@@ -255,7 +255,7 @@ function(
 		 */
 		createDivExp: function(pos) {
 			var div;
-			div = Util.createHtmlElement("div");
+			div = domConstruct.create("div");
 
 			div.className = "person expanded-person";
 			div.style.zIndex = 9;
@@ -280,13 +280,19 @@ function(
 			var d = this.divCur;
 
 			if (d.offsetWidth == 0) {
-				/* at load time we don't have the actualized position,
-				we only have our manually set styles, which represent the
-				content box, so we need to add padding and border
-				width and height */
+				/*
+				 * At load time we don't have the actualized position,
+				 * we only have our manually set styles, which represent the
+				 * content box, so we need to add padding and border
+				 * width and height.
+				 * actually, we don't do it this way because on chrome the
+				 * padding and border come back as zero unless the div is
+				 * actually in the doc.
+				 */
 				return this.getRectFromStyle();
 			}
-			return Rect.fromPos(domGeometry.position(d,true));
+			var p = domGeometry.position(d,true);
+			return Rect.fromPos(p);
 		},
 
 		getRectFromStyle: function(d) {
@@ -384,14 +390,16 @@ function(
 				this.div.parentNode.replaceChild(this.divExp,this.div);
 				this.divCur = this.divExp;
 			}
-			Util.forEach(this.childIn,function(partnership) {
+
+			this.childIn.forEach(function(partnership) {
 				partnership.calc();
 			});
-			Util.forEach(this.spouseIn,function(partnership) {
+			this.spouseIn.forEach(function(partnership) {
 				partnership.calc();
 			});
 			this.calc();
-			Util.forEach(this.tooltips,function(tt) {
+
+			this.tooltips.forEach(function(tt) {
 				tt.hide();
 			});
 		},
@@ -414,7 +422,7 @@ function(
 						td = domConstruct.create("th",{innerHTML:"citation"},tr);
 				tfoot = domConstruct.create("tfoot",null,table);
 				tbody = domConstruct.create("tbody",null,table);
-					Util.forEach(this.model.getEvents(), lang.hitch(this,function(evt) {
+					this.model.getEvents().forEach(lang.hitch(this,function(evt) {
 						var note, ttip, cit;
 						tr = domConstruct.create("tr",null,tbody);
 							td = domConstruct.create("td",{innerHTML:evt.getType()},tr);
@@ -442,8 +450,8 @@ function(
 		},
 
 		getEventsFromPartnerships: function() {
-			Util.forEach(this.spouseIn, lang.hitch(this, function(part) {
-				Util.forEach(part.getEvents(), lang.hitch(this, function(evt) {
+			this.spouseIn.forEach(lang.hitch(this, function(part) {
+				part.getEvents().forEach(lang.hitch(this, function(evt) {
 					this.model.getEvents().push(evt);
 				}));
 			}));
