@@ -84,12 +84,12 @@ define(["dojo/_base/declare"], function(declare) {
 		 * @throws if the given child is not a {@link TreeNode}
 		 */
 		removeChild: function(child) {
+			var c;
 			child.parent = null;
-			this.children = this.children.filter(
-				function (c) {
-					return c !== child
-				}
-			);
+			c = this.children.indexOf(child);
+			if (c >= 0) {
+				delete this.children[c];
+			}
 		},
 
 		/**

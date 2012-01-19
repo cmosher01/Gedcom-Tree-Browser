@@ -34,6 +34,7 @@ define([
 	"nu/mine/mosher/util/Util",
 	"nu/mine/mosher/gfx/Point",
 	"nu/mine/mosher/gfx/Selector",
+	"nu/mine/mosher/gfx/Progress",
 	"nu/mine/mosher/gedcom/model/date/YMD",
 	"nu/mine/mosher/gedcom/model/date/DateRange",
 	"nu/mine/mosher/gedcom/model/date/DatePeriod",
@@ -57,6 +58,7 @@ function(
 	Util,
 	Point,
 	Selector,
+	Progress,
 	YMD,
 	DateRange,
 	DatePeriod,
@@ -82,7 +84,7 @@ function(
  * @requires GedcomEvent
  * @requires Point
  * @requires Util
- * 
+ *
  * @constructor
  * @param {GedcomTree} gedcomtree tree to extract data from
  * @return new {@link GedcomExtractor}
@@ -156,9 +158,29 @@ selectPerson: function(person) {
  * Calculates every {@link Partnership}.
  */
 calc: function() {
-	Util.forEachProp(this.mpartnership,function(p) {
-		p.calc();
+	var todo = [];
+	Util.forEachProp(this.mpartnership, function(partnership) {
+		todo.push(partnership);
 	});
+
+	var progress = new Progress(domConstruct.create("div",{},win.body(),"first"));
+	var tot = todo.length;
+	progress.setTotalSteps(tot);
+
+	var doSome = function() {
+		var i;
+		for (i = 0; i < 15; ++i) {
+			if (!todo.length) {
+				progress.setProgress(tot);
+				//TODO progress.destroy();
+				return;
+			}
+			todo.pop().calc();
+		}
+		progress.setProgress(tot-todo.length);
+		setTimeout(doSome,17);
+	};
+	setTimeout(doSome,17);
 },
 
 /**

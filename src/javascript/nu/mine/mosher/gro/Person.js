@@ -277,30 +277,11 @@ function(
 		 * @type Rect
 		 */
 		getRect: function() {
-			var d = this.divCur;
-
-			if (d.offsetWidth == 0) {
-				/*
-				 * At load time we don't have the actualized position,
-				 * we only have our manually set styles, which represent the
-				 * content box, so we need to add padding and border
-				 * width and height.
-				 * actually, we don't do it this way because on chrome the
-				 * padding and border come back as zero unless the div is
-				 * actually in the doc.
-				 */
-				return this.getRectFromStyle();
-			}
-			var p = domGeometry.position(d,true);
-			return Rect.fromPos(p);
+			return Rect.fromPos(this.getPosition());
 		},
 
-		getRectFromStyle: function(d) {
-			var x, r;
-			var d = this.divCur;
-			x = domGeometry.getPadBorderExtents(d);
-			r = Rect.fromBoxFull(d.style);
-			return new Rect(r.getPos(),new Size(r.getWidth()+x.w,r.getHeight()+x.h))
+		getPosition: function() {
+			return domGeometry.position(this.divCur,true);
 		},
 
 		/**
