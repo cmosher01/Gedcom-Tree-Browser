@@ -8,4 +8,6 @@ Copyright © 2011–2012, Christopher Alan Mosher, Shelton, Connecticut, USA, <c
 View a drop-line chart of a GEDCOM genealogy file in a web browser. Written in Javascript.
 
 Deprecated. All my genealogy programs and libraries are now written in Java.
-See [Gedcom-Lib](https://github.com/cmosher01/Gedcom-Lib), for example.
+
+For example: [Gedcom-Lib](https://github.com/cmosher01/Gedcom-Lib)
+or [Gedcom-XY-Editor](https://github.com/cmosher01/Gedcom-XY-Editor)
